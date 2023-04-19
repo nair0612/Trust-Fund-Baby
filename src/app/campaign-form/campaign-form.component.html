@@ -1,0 +1,94 @@
+<form [formGroup]="camForm" (ngSubmit)="campaignSubmitted()" class="border p-3 rounded-3">
+    <div class="content">
+    <div class="row g-0">
+        <div class="col text-center p-2 mb-3 bg-light">
+            <span class="fs-3">Campaign Form</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="fullName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" formControlName="fullName"> 
+            <div class="form-text text-danger" *ngIf="FullName.errors?.['required'] && (FullName.touched || FullName.dirty)">
+                Full Name is Required
+            </div> 
+            <div class="form-text text-danger" *ngIf="FullName.errors?.['minlengh'] && (FullName.touched || FullName.dirty)">
+                Full Name is too short
+            </div>  
+        </div>
+        <div class="col" style="padding: 12px;">
+            <label for="campaignTitle" class="form-label">Campaign Title</label>
+            <input type="text" class="form-control" id="campaignTitle" formControlName="campaignTitle"> 
+            <div class="form-text text-danger" *ngIf="CampaignTitle.errors?.['required'] && (CampaignTitle.touched || CampaignTitle.dirty)">
+                Campaign Title is Required
+            </div> 
+            <div class="form-text text-danger" *ngIf="CampaignTitle.errors?.['minlengh'] && (CampaignTitle.touched || CampaignTitle.dirty)">
+                Campaign Title is too short
+            </div>  
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mb-3">
+            <label for="description" class="form-label">Campaign Description</label>
+            <textarea name="text" cols="40" rows="5" class="form-control" id="description" formControlName="description"></textarea>
+            <div class="form-text text-danger" *ngIf="Description.errors?.['required'] && (Description.touched || Description.dirty)">
+                Description is Required
+            </div> 
+            <div class="form-text text-danger" *ngIf="Description.errors?.['minlengh'] && (Description.touched || Description.dirty)">
+                Description is too short
+            </div>
+            <div class="form-text text-danger" *ngIf="Description.errors?.['maxlengh'] && (Description.touched || Description.dirty)">
+                Description is too big
+            </div>  
+        </div>        
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="noTokens" class="form-label">No of Tokens</label>
+            <input type="number" class="form-control" id="noTokens" formControlName="noTokens"> 
+            <div class="form-text text-danger" *ngIf="NoTokens.errors?.['required'] && (NoTokens.touched || NoTokens.dirty)">
+                Number of Tokens is Required
+            </div> 
+           
+        </div>
+        <div class="col">
+            <label for="tokenPrice" class="form-label">Token Price</label>
+            <input type="number" step="0.01" class="form-control" id="tokenPrice" formControlName="tokenPrice"> 
+            <div class="form-text text-danger" *ngIf="TokenPrice.errors?.['required'] && (TokenPrice.touched || TokenPrice.dirty)">
+                Token Price is Required
+            </div>           
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="goal" class="form-label">Goal</label>
+            <input type="number" step="0.01" [disabled]="isDisabled" class="form-control" id="goal" formControlName="goal">
+            <div class="form-text text-danger" *ngIf="Goal.errors?.['required'] && (Goal.touched || Goal.dirty)">
+                Goal is Required
+            </div>              
+        </div>
+        <div class="col">
+            <label for="endDate" class="form-label">End Date</label>
+            <input type="date" class="form-control" id="endDate" formControlName="endDate"> 
+            <div class="form-text text-danger" *ngIf="EndDate.errors?.['required'] && (EndDate.touched || EndDate.dirty)">
+                End Date is Required
+            </div>            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mb-3">
+            <label for="imageURL" class="form-label">Campaign Image URL</label>
+            <input type="text" class="form-control" id="imageURL" formControlName="imageURL"> 
+            <div class="form-text text-danger" *ngIf="ImageURL.errors?.['required'] && (ImageURL.touched || ImageURL.dirty)">
+                Image URL is Required
+            </div> 
+        </div>        
+    </div>
+    <div mat-dialog-actions class="row">
+        <div class="col-md-6 offset-3">
+                <button type="submit" class="btn btn-primary">Submit</button>         
+                <button type="button" class="btn btn-primary" [mat-dialog-close]="false">Cancel</button>           
+        </div>    
+    </div>
+</div>
+</form>
