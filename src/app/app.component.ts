@@ -5,14 +5,16 @@ import { CampaignFormComponent } from './campaign-form/campaign-form.component';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'Trust-Fund-Baby';
 
-  constructor(private _dialog: MatDialog) {}
+  constructor(
+    private _dialog: MatDialog
+  ) {}
 
   openCampaignForm() {
-    this._dialog.open(CampaignFormComponent)
+    this._dialog.open(CampaignFormComponent);
   }
 }
