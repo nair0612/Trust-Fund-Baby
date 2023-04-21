@@ -1,0 +1,12 @@
+.campaign-card {
+  max-width: 300px;
+  background-color: #eeeeee;
+  border-radius: 8px;
+}
+
+.invest-btn {
+    position: absolute;
+    right: 16px;
+    bottom: 10px;
+  }
+
