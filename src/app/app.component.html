@@ -1,7 +1,14 @@
 <mat-toolbar color="primary">
   <span>Trust Fund Baby</span>
   <span class="example-spacer"></span>
-  <button mat-raised-button (click)="openCampaignForm()">
+  <button class="example-icon rounded-full" *ngIf="!walletConnected" mat-raised-button (click)="connectToWallet()">
+    Connect To Wallet
+  </button>
+  <div class="rounded-full" *ngIf="walletConnected">
+    <label>Wallet Connected</label> 
+  </div>
+  <pre></pre>
+  <button class="example-icon rounded-full" mat-raised-button (click)="openCampaignForm()">
     Create Campaign Form
   </button>
 </mat-toolbar>
