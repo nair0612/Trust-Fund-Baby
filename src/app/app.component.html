@@ -1,7 +1,7 @@
 <mat-toolbar color="primary">
   <span>Trust Fund Baby</span>
   <span class="example-spacer"></span>
-  <button class="example-icon rounded-full" *ngIf="!walletConnected" mat-raised-button (onlick)="connectToWallet()">
+  <button class="example-icon rounded-full" *ngIf="!walletConnected" mat-raised-button (click)="connectToWallet()">
     Connect To Wallet
   </button>
   <div class="rounded-full" *ngIf="walletConnected">
