@@ -9,11 +9,13 @@ import { MaterialModule } from './material/material.module';
 import { AppComponent } from './app.component';
 import { CampaignComponent } from './campaign/campaign.component';
 import { CampaignFormComponent } from './campaign-form/campaign-form.component';
+import { SearchBarComponent } from './search-bar/search-bar.component';
 @NgModule({
   declarations: [
     AppComponent,
     CampaignFormComponent,
-    CampaignComponent
+    CampaignComponent,
+    SearchBarComponent
   ],
   imports: [
     BrowserModule,

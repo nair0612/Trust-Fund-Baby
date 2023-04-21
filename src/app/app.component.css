@@ -13,6 +13,15 @@
   flex: 1 1 auto;
 }
 
+.spacer {
+  width: 1%;
+}
+
 .content {
   padding-top: 1%;
+}
+
+.search-content {
+  padding-top: 1%;
+  padding-left: 1%;
 }
