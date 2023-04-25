@@ -7,15 +7,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from './material/material.module';
 import { AppComponent } from './app.component';
+import { SwiperModule } from 'swiper/angular';
 import { CampaignComponent } from './campaign/campaign.component';
 import { CampaignFormComponent } from './campaign-form/campaign-form.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
+import { FooterComponent } from './footer/footer.component';
 @NgModule({
   declarations: [
     AppComponent,
     CampaignFormComponent,
     CampaignComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +27,8 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
     BrowserAnimationsModule,
     HttpClientModule,
     FlexLayoutModule,
-    MaterialModule
+    MaterialModule,
+    SwiperModule
   ],
   providers: [],
   bootstrap: [AppComponent]

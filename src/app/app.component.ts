@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CampaignFormComponent } from './campaign-form/campaign-form.component';
+import SwiperCore, { Navigation, Pagination} from 'swiper';
 import { WalletService } from './services/wallet.service';
+
+SwiperCore.use([Navigation, Pagination]);
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  encapsulation: ViewEncapsulation.None   
 })
 export class AppComponent {
   title = 'Trust-Fund-Baby';

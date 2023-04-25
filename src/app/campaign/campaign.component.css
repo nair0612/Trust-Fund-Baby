@@ -1,5 +1,6 @@
 .campaign-card {
   max-width: 300px;
+  max-height: 470px;
   background-color: #eeeeee;
   border-radius: 8px;
 }

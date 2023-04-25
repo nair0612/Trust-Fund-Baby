@@ -1,13 +1,14 @@
 input[type=text] {
   width: 130px;
   box-sizing: border-box;
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
+  height: 60%;
   border-radius: 4px;
   font-size: 16px;
   background-color: white;
   background-image: url('src/assets/search.svg');
-  background-size: 32.5px;
-  background-position: 6px 7px;
+  background-size: 28px;
+  background-position: 6px 50%;
   background-repeat: no-repeat;
   padding: 12px 20px 12px 40px;
   -webkit-transition: width 0.4s ease-in-out;
@@ -15,5 +16,5 @@ input[type=text] {
 }
 
 input[type=text]:focus {
-  width: 40%;
+  width: 260%;
 }

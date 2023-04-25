@@ -1,9 +1,12 @@
-<mat-toolbar color="primary" class="navBar">
+<mat-toolbar color="white" class="navBar">
   <button mat-icon-button (click)="sidenav1.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
   <span>Trust Fund Baby</span>
   <span class="spacer"></span>
+  <section class="secSearch">
+    <div class="search-content"><app-search-bar></app-search-bar></div>
+  </section>
   <span class="example-spacer"></span>
   <button
     class="example-icon rounded-full"
@@ -35,17 +38,60 @@
       <a mat-list-item>About Us</a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content >
-    <div class="search-content"><app-search-bar></app-search-bar></div>
-    <div fxLayout="row Wrap" fxLayoutAlign="space-around">
-    <div class="content"><app-campaign></app-campaign></div>
-    <div class="content"><app-campaign></app-campaign></div>
-    <div class="content"><app-campaign></app-campaign></div>
-    <div class="content"><app-campaign></app-campaign></div>
-    <div class="content"><app-campaign></app-campaign></div>
-    <div class="content"><app-campaign></app-campaign></div>
-    <div class="content"><app-campaign></app-campaign></div>
-    <div class="content"><app-campaign></app-campaign></div>
-    <div class="content"><app-campaign></app-campaign></div></div>
+  <mat-sidenav-content>
+    <section class="secSlogan">
+      <div class="slogan-content">
+        <p class="slogan1">Empower your ideas, fund your dreams with us.</p>
+        <p class="slogan2">Invest in the future you believe in.</p>
+      </div>
+    </section>
+    <section class="secCampaign">
+      <p class="title">Popular Projects</p>
+      <swiper
+        [slidesPerView]="4"
+        [spaceBetween]="20"
+        [navigation]="true"
+        [pagination]="{ clickable: true }"
+        [height]="800"
+        [loop]="true"
+      >
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+        <ng-template swiperSlide><app-campaign></app-campaign></ng-template>
+      </swiper>
+    </section>
+    <section class="secAboutus">
+      <p class="title">About us</p>
+      <div class="containerAboutUs">
+        <div style="padding: 1%">
+          <img
+            src="https://material.angular.io/assets/img/examples/shiba1.jpg"
+            alt="Photo of Campaign"
+            height="400px"
+            style="position: relative; left: 20%"
+          />
+        </div>
+        <div style="clear: left">
+          <h1 style="position: relative; right: 10%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trust Fund Baby is a
+            crowdfunding platform that democratizes access to capital and
+            empowers entrepreneurs, creators, and innovators to bring their
+            ideas to life. With a wide range of funding models and a commitment
+            to transparency, security, and innovation, we make it easy for
+            everyone to pursue their passions and achieve their goals. Join us
+            today and start turning your ideas into reality.
+          </h1>
+        </div>
+      </div>
+    </section>
+    <section class="secFooter">
+      <app-footer></app-footer>
+    </section>
   </mat-sidenav-content>
 </mat-sidenav-container>
