@@ -2,6 +2,27 @@
 @import "swiper/css/navigation";
 @import "swiper/css/pagination";
 
+.name:link {
+  color: rgb(0, 0, 0);
+  background-color: transparent;
+  text-decoration: none;
+}
+.name:visited {
+  color: rgb(0, 0, 0);
+  background-color: transparent;
+  text-decoration: none;
+}
+.name:hover {
+  color: rgb(0, 0, 0);
+  background-color: transparent;
+  text-decoration: none;
+}
+.name:active {
+  color: rgb(0, 0, 0);
+  background-color: transparent;
+  text-decoration: none;
+}
+
 .container {
   height: 100vh;
   display: flex;
@@ -11,6 +32,14 @@
 
 .navBar {
   justify-content: space-between;
+}
+
+.drawer {
+  background-color: rgba(255, 255, 255);
+}
+
+.drawer a:hover {
+  background-color: aquamarine;
 }
 
 .example-spacer {
@@ -28,47 +57,6 @@
 
 .secSearch {
   max-height: 60px;
-}
-
-.secSlogan {
-  background-color: #000117;
-  height: 300px;
-}
-
-.slogan1 {
-  color: white;
-  font-size: 48px;
-  font-weight: bold;
-  padding-top: 6.3%;
-  padding-left: 5%;
-  text-align: left;
-}
-
-.slogan2 {
-  color: white;
-  font-size: 48px;
-  font-weight: bold;
-  padding-top: 7%;
-  padding-right: 5%;
-  text-align: right;
-}
-
-.secCampaign {
-  background-color: white;
-  padding-left: 1%;
-  padding-right: 1%;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  padding-top: 2%;
-  padding-left: 1%;
-}
-
-.swiper {
-  height: 500px;
-  padding-left: 50px;
 }
 
 .swiper-button-next {
@@ -94,18 +82,6 @@
   background-color: #000117;
 }
 
-.secAboutus {
-  padding-left: 1%;
-  padding-right: 1%;
-  text-align: justify;
-}
-
-.containerAboutUs {
-  display: grid;
-  align-items: center;
-  grid-template-columns: 1fr 1fr;
-}
-
-.secFooter{
+.secFooter {
   padding-top: 2%;
 }

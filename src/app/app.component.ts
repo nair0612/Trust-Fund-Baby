@@ -1,8 +1,9 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CampaignFormComponent } from './campaign-form/campaign-form.component';
 import SwiperCore, { Navigation, Pagination} from 'swiper';
 import { WalletService } from './services/wallet.service';
+import {MatSidenav} from '@angular/material/sidenav';
 
 SwiperCore.use([Navigation, Pagination]);
 
@@ -13,9 +14,15 @@ SwiperCore.use([Navigation, Pagination]);
   encapsulation: ViewEncapsulation.None   
 })
 export class AppComponent {
+  @ViewChild('sidenav') sidenav: MatSidenav;
+
   title = 'Trust-Fund-Baby';
   public walletConnected : boolean = false;
   public walletId : string = '';
+
+  close() {
+    this.sidenav.close();
+  }
 
   constructor(
     private _dialog: MatDialog,
