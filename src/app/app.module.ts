@@ -9,11 +9,21 @@ import { MaterialModule } from './material/material.module';
 import { AppComponent } from './app.component';
 import { CampaignComponent } from './campaign/campaign.component';
 import { CampaignFormComponent } from './campaign-form/campaign-form.component';
+import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { AppHeaderComponent } from './app-header/app-header.component';
+
+const routes:Routes = [];
+
 @NgModule({
   declarations: [
     AppComponent,
     CampaignFormComponent,
-    CampaignComponent
+    CampaignComponent,
+    CampaignDetailsComponent,
+    HomeComponent,
+    AppHeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -22,7 +32,7 @@ import { CampaignFormComponent } from './campaign-form/campaign-form.component';
     BrowserAnimationsModule,
     HttpClientModule,
     FlexLayoutModule,
-    MaterialModule
+    MaterialModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
