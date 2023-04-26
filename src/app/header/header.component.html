@@ -1,42 +1,47 @@
 <mat-toolbar color="white" class="navBar">
-    <button mat-icon-button (click)="sidenav1.toggle()">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <span><a class="name" href="/Home">Trust Fund Baby</a></span>
-    <span class="spacer"></span>
-    <section class="secSearch">
-      <div class="search-content"><app-search-bar></app-search-bar></div>
-    </section>
-    <span class="example-spacer"></span>
-    <button
-      class="example-icon rounded-full"
-      *ngIf="!walletConnected"
-      mat-raised-button
-      (click)="connectToWallet()"
-    >
-      Connect To Wallet
-    </button>
-    <div class="rounded-full" *ngIf="walletConnected">
-      <label>Wallet Connected</label>
-    </div>
-    <span class="spacer"></span>
-    <button
-      class="example-icon rounded-full"
-      mat-raised-button
-      (click)="openCampaignForm()"
-    >
-      Create Campaign Form
-    </button>
-  </mat-toolbar>
+  <button mat-icon-button (click)="sidenav1.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span><a class="name" href="/Home">Trust Fund Baby</a></span>
+  <span class="spacer"></span>
+  <section class="secSearch">
+    <div class="search-content"><app-search-bar></app-search-bar></div>
+  </section>
+  <span class="example-spacer"></span>
+  <button
+    class="example-icon rounded-full"
+    *ngIf="!walletConnected"
+    mat-raised-button
+    (click)="connectToWallet()"
+  >
+    Connect To Wallet
+  </button>
+  <div class="rounded-full" *ngIf="walletConnected">
+    <label>Wallet Connected</label>
+  </div>
+  <span class="spacer"></span>
+  <button
+    class="example-icon rounded-full"
+    mat-raised-button
+    (click)="openCampaignForm()"
+  >
+    Create Campaign Form
+  </button>
+</mat-toolbar>
 
-  <mat-sidenav-container>
-    <mat-sidenav #sidenav1 mode="push">
-      <mat-nav-list class="drawer">
-        <a mat-list-item href="/AllCampaign">Campaigns</a>
-        <a mat-list-item href="/MyCampaign">My Campaign</a>
-        <a mat-list-item href="/MyInvestment">My Investment</a>
-        <a mat-list-item href="/Home#aboutUs" (click)="sidenav1.close()">About Us</a>
-      </mat-nav-list>
-    </mat-sidenav>
-  </mat-sidenav-container>
-  
+<mat-sidenav-container>
+  <mat-sidenav #sidenav1 mode="push">
+    <mat-nav-list class="drawer">
+      <a mat-list-item href="/AllCampaign">Campaigns</a>
+      <a mat-list-item href="/MyCampaign">My Campaign</a>
+      <a mat-list-item href="/MyInvestment">My Investment</a>
+      <a mat-list-item href="/Home#aboutUs" (click)="sidenav1.close()">About Us</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+    <section class="secFooter" >
+      <app-footer></app-footer>
+    </section>
+  </mat-sidenav-content>
+</mat-sidenav-container>
