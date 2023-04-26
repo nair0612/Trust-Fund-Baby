@@ -16,6 +16,8 @@ import { AllCampaignComponent } from './all-campaign/all-campaign.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { MyCampaignComponent } from './my-campaign/my-campaign.component';
 import { MyInvestmentComponent } from './my-investment/my-investment.component';
+import { HeaderComponent } from './header/header.component';
+import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +28,9 @@ import { MyInvestmentComponent } from './my-investment/my-investment.component';
     AllCampaignComponent,
     HomePageComponent,
     MyCampaignComponent,
-    MyInvestmentComponent
+    MyInvestmentComponent,
+    HeaderComponent,
+    CampaignDetailsComponent
   ],
   imports: [
     BrowserModule,
