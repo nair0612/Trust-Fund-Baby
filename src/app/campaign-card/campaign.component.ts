@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-campaign',
@@ -7,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class CampaignComponent {
 
+  constructor(private router: Router) {}
+
+  openCampaignDetails() {
+    this.router.navigate(['/campaignDetails']);
+  }
 }
