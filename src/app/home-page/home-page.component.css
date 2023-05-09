@@ -1,23 +1,23 @@
 .secSlogan {
   background-color: #000117;
-  height: 300px;
+  height: 200px;
 }
 
 .slogan1 {
   color: white;
-  font-size: 48px;
+  font-size: 29px;
   font-weight: bold;
-  padding-top: 6.3%;
-  padding-left: 5%;
+  padding-top: 4%;
+  padding-left: 10%;
   text-align: left;
 }
 
 .slogan2 {
   color: white;
-  font-size: 48px;
+  font-size: 29px;
   font-weight: bold;
-  padding-top: 7%;
-  padding-right: 5%;
+  padding-top: 3%;
+  padding-right: 12%;
   text-align: right;
 }
 
