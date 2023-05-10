@@ -26,6 +26,8 @@
     "rxjs": "~7.8.0",
     "swiper": "^8.4.6",
     "tslib": "^2.3.0",
+    "web3": "^1.9.0",
+    "web3modal": "^1.9.12",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
