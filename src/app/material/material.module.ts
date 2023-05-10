@@ -18,7 +18,7 @@ const materialComponents = [
   MatGridListModule,
   MatSidenavModule,
   MatListModule,
-  MatInputModule
+  MatInputModule,
 ]
 
 @NgModule({
