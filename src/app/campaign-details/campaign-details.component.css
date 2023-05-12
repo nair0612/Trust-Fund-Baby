@@ -1,0 +1,81 @@
+.main-content {
+  padding-top: 116px;
+  min-height: calc(100vh - 41px);
+}
+
+.main-content {
+  padding-top: 50px;
+  padding-bottom: 100px
+}
+
+.section-content-p30 {
+  padding: 0 30px
+}
+
+.section-content {
+  position: relative;
+  margin: 0 auto;
+  z-index: 1
+}
+
+.price {
+  margin: 15px 0 0;
+  font-weight: 800;
+  color: #0da8e4
+}
+
+h4 {
+  font-size: 18px
+}
+
+img {
+  max-width: 100%;
+  height: auto
+}
+
+.remaining-days-block {
+  background-color: #f2f2f2;
+  padding: 20px;
+  text-align: center;
+}
+
+.remaining-days-heading {
+  font-size: 19px;
+  margin-bottom: 11px;
+  font-weight: bold;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.remaining-days-number {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.radio-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-new {
+  text-align: center;
+}
+
+input[type=number]::after {
+  content: " ETH";
+  position: absolute;
+  right: 10px;
+}
+
+.row {
+  padding-top: 10px;
+}
+
+.newForm {
+  background-color: #f2f2f2;
+}
+
+.btnNew {
+  padding-left: 138px;
+}

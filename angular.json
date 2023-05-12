@@ -28,7 +28,7 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": ["src/app/contracts/create_campaign_abi.js"]
           },
           "configurations": {
             "production": {
