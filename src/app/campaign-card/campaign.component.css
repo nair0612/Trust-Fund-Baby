@@ -1,0 +1,26 @@
+.campaign-card {
+  max-width: 282px;
+  height: 455px;
+  background-color: #eeeeee;
+  border-radius: 8px;
+  white-space: normal;
+}
+
+.invest-btn {
+  position: absolute;
+  right: 16px;
+  bottom: 10px;
+}
+
+:host img {
+  width: 282px;
+  height: 282px;
+  object-fit: cover;
+}
+
+:host p {
+  max-height: 5.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}

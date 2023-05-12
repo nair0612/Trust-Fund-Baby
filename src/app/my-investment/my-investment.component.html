@@ -1,0 +1,18 @@
+<div class="my-container-wrap">
+    <div class="row">
+      <div class="col-md-3 mb-4" *ngFor="let cardData of visibleCardDataList">
+        <app-campaign [cardData]="cardData"></app-campaign>
+      </div>
+    </div>
+    <button
+      class="btn btn-primary mt-3"
+      *ngIf="
+        visibleCardDataList.length >= cardsPerLoad &&
+        visibleCardDataList.length < cardDataList.length
+      "
+      (click)="showMore()"
+    >
+      Show More
+    </button>
+  </div>
+  

@@ -1,0 +1,87 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  },
+  "campaign": [
+    {
+      "fullName": "",
+      "campaignTitle": "",
+      "description": "",
+      "noTokens": "",
+      "tokenPrice": "",
+      "goal": "",
+      "endDate": "",
+      "imageURL": "",
+      "id": 1
+    },
+    {
+      "fullName": "wedws",
+      "campaignTitle": "sdfsd",
+      "description": "etedfs",
+      "noTokens": 1,
+      "tokenPrice": 0.1,
+      "goal": 0.5,
+      "endDate": "2023-04-19",
+      "imageURL": "wrdefs",
+      "id": 2
+    },
+    {
+      "fullName": "",
+      "campaignTitle": "",
+      "description": "",
+      "noTokens": "",
+      "tokenPrice": "",
+      "goal": "",
+      "endDate": "",
+      "imageURL": "",
+      "id": 3
+    },
+    {
+      "fullName": "",
+      "campaignTitle": "",
+      "description": "",
+      "noTokens": "",
+      "tokenPrice": "",
+      "goal": "",
+      "endDate": "",
+      "imageURL": "",
+      "id": 4
+    },
+    {
+      "fullName": "",
+      "campaignTitle": "",
+      "description": "",
+      "noTokens": "",
+      "tokenPrice": "",
+      "goal": "",
+      "endDate": "",
+      "imageURL": "",
+      "id": 5
+    },
+    {
+      "fullName": "Rohit",
+      "campaignTitle": "adds",
+      "description": "sfgfgnhdf",
+      "noTokens": 1,
+      "tokenPrice": 0.02,
+      "goal": 0.1,
+      "endDate": "2023-04-28",
+      "imageURL": "ryyde",
+      "id": 6
+    }
+  ]
+}
