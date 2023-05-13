@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 import { Router } from '@angular/router';
 
 interface CardData {
@@ -15,7 +15,7 @@ export class CampaignComponent {
   @Input() cardData: CardData;
   constructor(private router: Router) {}
 
-  openCampaignDetails() {
-    this.router.navigate(['/campaignDetails']);
+  openCampaignDetails(campaignId : string) {
+    this.router.navigate(['/campaignDetails', campaignId]);
   }
 }
