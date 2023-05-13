@@ -6,7 +6,7 @@
           <div>
             <div class="row">
                 <div class="col-md-8">
-                    <img src="https://material.angular.io/assets/img/examples/shiba2.jpg" style="height: 350px; width: 850px;"> 
+                    <img src={{this.data.profileImage}} style="height: 350px; width: 850px;"> 
                 </div>
                 <div class="col-md-4">
                     <div class="remaining-days-block">
@@ -16,7 +16,7 @@
 
                     <div class="remaining-days-block">
                         <h2 class="remaining-days-heading">Target Goal to be achieved</h2>
-                        <p class="remaining-days-number">1 ETH</p>
+                        <p class="remaining-days-number">{{this.data.goal}} ETH</p>
                     </div>
 
                     <div class="remaining-days-block">
@@ -30,19 +30,17 @@
                 <div class="col-md-8 cam-description">
                     <div class="creator">
                         <h4>Campaign Creator</h4>
-                        <p>Name of the creator : ABCDx33532353fdg4545343</p>
+                        <p>Name of the creator : {{this.data.owner}}</p>
                     </div>
                     <br>
                     <div class="title">
                         <h4>Campaign Title</h4>
-                        <p>A dog on the grass field waiting for its owner to throw the ball</p>
+                        <p>{{this.data.title}}</p>
                     </div>
                     <br>
                     <div class="description">
                         <h4>Campaign Description</h4>
-                        <p>The Shiba Inu is the smallest of the six original and distinct spitz
-                            breeds of dog from Japan. A small, agile dog that copes very well with
-                            mountainous terrain, the Shiba Inu was originally bred for hunting.</p>
+                        <p>{{this.data.description}}</p>
                     </div>
                     <br>
                     <div class="donators">

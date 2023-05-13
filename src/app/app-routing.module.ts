@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: 'AllCampaign', component: AllCampaignComponent },
   { path: 'MyCampaign', component: MyCampaignComponent },
   { path: 'MyInvestment', component: MyInvestmentComponent },
-  { path: 'campaignDetails', component: CampaignDetailsComponent}
+  { path: 'campaignDetails/:camapignId', component: CampaignDetailsComponent}
 ];
 
 @NgModule({
