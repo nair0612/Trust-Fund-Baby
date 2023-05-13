@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: GPL-3.1
 
 pragma solidity >=0.7.0 <0.9.0;
 
@@ -10,12 +10,10 @@ contract CrowdFundingCampaign{
     uint256 public tokenPrice;
     uint256 public totalNumOfTokens;
     uint256 public remainNumOfTokens;
+    uint256 public creationDate;
     uint256 public deadline;
     string public profileImage;
-    bool public isActive;
-    bool public terminated;
-    // todo: creation date
-    // todo: three states: active, inactivev, terminated
+    uint256 public status;
     mapping(address => uint256) public donations;
 
 
@@ -26,83 +24,75 @@ contract CrowdFundingCampaign{
         uint256 _goal,
         uint256 _tokenPrice,
         uint256 _totalNumOfTokens,
-        uint256 _duration,
+        uint256 _durationInDays,
         string memory _profileImage
     ) {
         owner = _owner;
         title = _title;
         description = _description;
+        require(_goal == _tokenPrice * _totalNumOfTokens, "Campaign Creation failed: Goal does not match the token price and number of tokens");
         goal = _goal;
         tokenPrice = _tokenPrice;
         totalNumOfTokens = _totalNumOfTokens;
         remainNumOfTokens = _totalNumOfTokens;
-        deadline = block.timestamp + _duration;
+        creationDate = block.timestamp;
+        deadline = creationDate + _durationInDays * 1 days;
         profileImage = _profileImage;
-        isActive = true;
-        terminated = false;
+        status = 1;
     }
 
     function donateToCampaign(uint256 _numOfTokensDonate) public payable {
-        checkStatus();
-        require(isActive, "Campaign is not active");
-        require(!terminated, "Camapign has been terminated");
-        require(msg.value % tokenPrice == 0, "Invalid donation amount, not full token");
-        require(msg.value == _numOfTokensDonate * tokenPrice, "Invalid donation amount, not enough crypto");
-        require(remainNumOfTokens >= _numOfTokensDonate, "Not enough tokens left");
+        updateStatus();
+        require(status == 1, "Donation failed: The campaign is no longer active");
+        require(msg.value == _numOfTokensDonate * tokenPrice, "Donation failed: Invalid donation amount");
+        require(remainNumOfTokens >= _numOfTokensDonate, "Donation failed: Not enough tokens remain");
         
         donations[msg.sender] += _numOfTokensDonate;
         remainNumOfTokens -= _numOfTokensDonate;
-        // Additional logic for updating campaign state or emitting events can be added here
     }
 
-    function checkStatus() public {
-        require(isActive, "Campaign is already inactive");
-        require(!terminated, "Campaign has been terminated");
-
-        if (remainNumOfTokens == 0 || block.timestamp >= deadline) {
-            isActive = false;
+    function updateStatus() public {
+        require(status == 1);
+        if (remainNumOfTokens == 1 || block.timestamp >= deadline) {
+            status = 0;
         }
     }
 
     function withdrawFromCampaign(uint256 _numOfTokensWithdraw) public payable {
-        checkStatus();
-        require(isActive, "Campaign is not active");
-        require(!terminated, "Campaign has been terminated");
-        require(donations[msg.sender] < _numOfTokensWithdraw, "Invalid number of tokens to withdraw");
+        updateStatus();
+        require(status == 1, "Withdraw failed: The campaign has ended");
+        require(donations[msg.sender] <= _numOfTokensWithdraw, "Withdraw failed: Not enough tokens donated");
 
         uint256 amountToWithdraw = _numOfTokensWithdraw * tokenPrice;
         payable(msg.sender).transfer(amountToWithdraw);
-        donations[msg.sender] -= amountToWithdraw;
+        donations[msg.sender] -= _numOfTokensWithdraw;
         remainNumOfTokens += _numOfTokensWithdraw;
     }
 
     function devWithdraw(uint256 _amountWithdraw) public payable {
-        checkStatus();
-        require(msg.sender == owner, "You cannot withdraw, you are not the owner of this campaign");
-        require(!isActive, "You cannot withdraw, campaign has not ended yet");
-        require(!terminated, "You cannot withdraw, campaign has been terminated");
-        require(address(this).balance >= _amountWithdraw, "You cannot withdraw, insufficient funds left");
+        updateStatus();
+        require(msg.sender == owner, "Dev Withdraw failed: You are not the owner");
+        require(status == 0, "Dev Withdraw failed: You cannot withdraw from active or terminated campaign");
+        require(address(this).balance >= _amountWithdraw, "Dev Withdraw failed: Insufficient balance");
 
         payable(msg.sender).transfer(_amountWithdraw);
     }
 
     function terminateCampaign() public {
-        checkStatus();
-        require(msg.sender == owner, "You cannot terminate the campaign, you are not the owner of this campaign");
-        require(!isActive, "You cannot terminate the campaign, the goal has been reached");
-        require(!terminated, "You cannot terminate the campaign, the campaign has been terminated");
+        updateStatus();
+        require(msg.sender == owner, "Termination failed: You are not the owner");
+        require(status == 1, "Termination failed: Only active campaign can be terminated");
 
-        isActive = false;
-        terminated = true;
+        status = 2;
     }
 
     function withdrawFromTerminatedCampaign() public payable {
-        require(terminated == true, "You cannot withdraw, the campaign is still active");
-        require(donations[msg.sender] >= 0, "You cannot withdraw, you have no donations in this campaign");
+        require(status == 2);
+        require(donations[msg.sender] >= 1, "Withdraw from Terminated failed: You have no donations");
 
-        uint256 amountToWithdraw = donations[msg.sender];
+        uint256 amountToWithdraw = donations[msg.sender] * tokenPrice;
         payable(msg.sender).transfer(amountToWithdraw);
-        donations[msg.sender] = 0;
+        donations[msg.sender] = 1;
     }
 
 }

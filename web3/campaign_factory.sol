@@ -8,7 +8,7 @@ contract CampaignFactory{
     address[] public crowdfundingContracts;
 
     event CampaignCreated();
-
+    
     function createNewCrowdFunding(
         address payable _owner,
         string memory _title,
@@ -67,10 +67,10 @@ contract CampaignFactory{
         uint256 tokenPrice;
         uint256 totalNumOfTokens;
         uint256 remainNumOfTokens;
+        uint256 creationDate;
         uint256 deadline;
         string profileImage;
-        bool isActive;
-        bool terminated;
+        uint256 status;
     }
 
     function getCampaignInfoByAddress(address campaignAddress) public view returns (FullCampaignInfo memory) {
@@ -85,10 +85,10 @@ contract CampaignFactory{
             tokenPrice: campaign.tokenPrice(),
             totalNumOfTokens: campaign.totalNumOfTokens(),
             remainNumOfTokens: campaign.remainNumOfTokens(),
+            creationDate: campaign.creationDate(),
             deadline: campaign.deadline(),
             profileImage: campaign.profileImage(),
-            isActive: campaign.isActive(),
-            terminated: campaign.terminated()
+            status: campaign.status()
         });
 
         return campaignInfo;
