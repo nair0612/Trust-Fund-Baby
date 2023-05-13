@@ -1,7 +1,11 @@
 <div class="my-container-wrap">
+  <div class="my-container">
+    <div class="my-container__search">
+      <app-search-bar (searchTextChanged)="onSearchTextEntered($event)"></app-search-bar>
+    </div>
   <div class="row">
     <div class="col-md-3 mb-4" *ngFor="let cardData of visibleCardDataList">
-      <app-campaign [cardData]="cardData"></app-campaign>
+      <app-campaign class="wrapper" [cardData]="cardData"></app-campaign>
     </div>
   </div>
   <button class="btn btn-primary mt-3" *ngIf="visibleCardDataList.length < cardDataList.length" (click)="showMore()">Show More</button>

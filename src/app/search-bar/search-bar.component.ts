@@ -17,25 +17,8 @@ enteredSearchValue: string = '';
 @Output()
 searchTextChanged: EventEmitter<string> = new EventEmitter<string>();
 
-onSearchTextChange(event: any) {
+onSearchTextChanged() {
   this.searchTextChanged.emit(this.enteredSearchValue);
 }
 
-  index = 0;
-  btnClass: any;
-  iptClass:any;
-
-tabChange(data: number){
-this.index = data;
-}
-btnClickHandler() {
-  if(this.btnClass) {
-this.btnClass  = '';
-this.iptClass  = '';
-  } else {
-this.btnClass = 'close'
-this.iptClass = 'square'
-
-  }
-}
 }
