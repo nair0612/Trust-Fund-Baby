@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 
 @Component({
@@ -7,6 +7,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./search-bar.component.css'],
 })
 export class SearchBarComponent {
+constructor() { }
+
+ngOnInit():void {
+}
+
+enteredSearchValue: string = '';
+
+@Output()
+searchTextChanged: EventEmitter<string> = new EventEmitter<string>();
+
+onSearchTextChange(event: any) {
+  this.searchTextChanged.emit(this.enteredSearchValue);
+}
+
   index = 0;
   btnClass: any;
   iptClass:any;

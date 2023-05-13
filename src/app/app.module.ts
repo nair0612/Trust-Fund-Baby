@@ -40,7 +40,8 @@ import { CampaignDetailsComponent } from './campaign-details/campaign-details.co
     HttpClientModule,
     FlexLayoutModule,
     MaterialModule,
-    SwiperModule
+    SwiperModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
