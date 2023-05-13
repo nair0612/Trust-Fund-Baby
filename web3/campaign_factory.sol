@@ -6,8 +6,6 @@ pragma solidity >=0.7.0 <0.9.0;
 
 contract CampaignFactory{
     address[] public crowdfundingContracts;
-
-    event CampaignCreated();
     
     function createNewCrowdFunding(
         address payable _owner,
@@ -16,7 +14,7 @@ contract CampaignFactory{
         uint256 _goal,
         uint256 _tokenPrice,
         uint256 _numOfTokens,
-        uint256 _duration,
+        uint256 _durationInDays,
         string memory _profileImage
     ) public returns (address)  {
         CrowdFundingCampaign newCrowdFunding = new CrowdFundingCampaign(
@@ -26,7 +24,7 @@ contract CampaignFactory{
             _goal,
             _tokenPrice,
             _numOfTokens,
-            _duration,
+            _durationInDays,
             _profileImage
         );
 

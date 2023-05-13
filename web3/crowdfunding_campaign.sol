@@ -15,7 +15,29 @@ contract CrowdFundingCampaign{
     string public profileImage;
     uint256 public status;
     mapping(address => uint256) public donations;
+    bool internal locked;
 
+    event CampaignCreated(address indexed owner, string title);
+    event TokensDonated(address indexed donor, uint256 tokens);
+    event TokensWithdrawn(address indexed donor, uint256 tokens);
+    event CampaignTerminated();
+
+    modifier onlyOwner(){
+        require(msg.sender == owner, "Caller is not owner");
+        _;
+    }
+
+    modifier onlyActive(){
+        require(status == 1, "Campaign is not active");
+        _;
+    }
+
+    modifier noReentrancy(){
+        require(!locked, "No Reentrancy");
+        locked = true;
+        _;
+        locked = false;
+    }
 
     constructor(
         address payable _owner,
@@ -39,54 +61,55 @@ contract CrowdFundingCampaign{
         deadline = creationDate + _durationInDays * 1 days;
         profileImage = _profileImage;
         status = 1;
+
+        emit CampaignCreated(owner, title);
     }
 
-    function donateToCampaign(uint256 _numOfTokensDonate) public payable {
+    function donateToCampaign(uint256 _numOfTokensDonate) public payable onlyActive{
         updateStatus();
-        require(status == 1, "Donation failed: The campaign is no longer active");
         require(msg.value == _numOfTokensDonate * tokenPrice, "Donation failed: Invalid donation amount");
         require(remainNumOfTokens >= _numOfTokensDonate, "Donation failed: Not enough tokens remain");
         
         donations[msg.sender] += _numOfTokensDonate;
         remainNumOfTokens -= _numOfTokensDonate;
+
+        emit TokensDonated(msg.sender, _numOfTokensDonate);
     }
 
-    function updateStatus() public {
+    function updateStatus() internal {
         require(status == 1);
-        if (remainNumOfTokens == 1 || block.timestamp >= deadline) {
+        if (remainNumOfTokens == 0 || block.timestamp >= deadline) {
             status = 0;
         }
     }
 
-    function withdrawFromCampaign(uint256 _numOfTokensWithdraw) public payable {
+    function withdrawFromCampaign(uint256 _numOfTokensWithdraw) public payable noReentrancy onlyActive{
         updateStatus();
-        require(status == 1, "Withdraw failed: The campaign has ended");
-        require(donations[msg.sender] <= _numOfTokensWithdraw, "Withdraw failed: Not enough tokens donated");
+        require(donations[msg.sender] >= _numOfTokensWithdraw, "Withdraw failed: Not enough tokens donated");
 
         uint256 amountToWithdraw = _numOfTokensWithdraw * tokenPrice;
         payable(msg.sender).transfer(amountToWithdraw);
         donations[msg.sender] -= _numOfTokensWithdraw;
         remainNumOfTokens += _numOfTokensWithdraw;
+
+        emit TokensWithdrawn(msg.sender, _numOfTokensWithdraw);
     }
 
-    function devWithdraw(uint256 _amountWithdraw) public payable {
+    function devWithdraw(uint256 _amountWithdraw) public payable onlyOwner noReentrancy{
         updateStatus();
-        require(msg.sender == owner, "Dev Withdraw failed: You are not the owner");
         require(status == 0, "Dev Withdraw failed: You cannot withdraw from active or terminated campaign");
         require(address(this).balance >= _amountWithdraw, "Dev Withdraw failed: Insufficient balance");
 
         payable(msg.sender).transfer(_amountWithdraw);
     }
 
-    function terminateCampaign() public {
+    function terminateCampaign() public onlyOwner onlyActive{
         updateStatus();
-        require(msg.sender == owner, "Termination failed: You are not the owner");
-        require(status == 1, "Termination failed: Only active campaign can be terminated");
 
         status = 2;
     }
 
-    function withdrawFromTerminatedCampaign() public payable {
+    function withdrawFromTerminatedCampaign() public payable noReentrancy{
         require(status == 2);
         require(donations[msg.sender] >= 1, "Withdraw from Terminated failed: You have no donations");
 
