@@ -1,4 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { CampaignconnectionService } from '../services/campaignconnection.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-all-campaign',
@@ -6,6 +10,9 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./all-campaign.component.css']
 })
 export class AllCampaignComponent {
+
+  data: any;
+
   cardDataList = [
     {
       id:'1',
@@ -286,11 +293,27 @@ export class AllCampaignComponent {
 
   visibleCardDataList = this.cardDataList.slice(0, 12);
 
+  constructor(
+    private route: ActivatedRoute,
+    private campaignConnectionService: CampaignconnectionService
+  ) {}
+
+  ngOnInit(): void {
+    // this.campaignId = this.route.snapshot.url[1].path;
+    // console.log('campaignId:', this.campaignId);
+    this.getAllCampaign();
+  }
+
   showMore() {
     const currentLength = this.visibleCardDataList.length;
     const nextItems = this.cardDataList.slice(currentLength, currentLength + 12);
     this.visibleCardDataList = this.visibleCardDataList.concat(nextItems);
   }
 
+  getAllCampaign() {
+    this.campaignConnectionService.getAllCampaign().subscribe((result) => {
+      this.data = result;
+    });
+  }
   
 }
