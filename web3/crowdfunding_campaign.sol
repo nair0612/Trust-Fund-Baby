@@ -16,27 +16,35 @@ contract CrowdFundingCampaign{
     uint256 public status;
     mapping(address => uint256) public donations;
     bool internal locked;
+    mapping(address => uint256) internal requestsTimestamps;
+    uint256 private constant REQUEST_INTERVAL = 5 seconds;
 
     event CampaignCreated(address indexed owner, string title);
     event TokensDonated(address indexed donor, uint256 tokens);
     event TokensWithdrawn(address indexed donor, uint256 tokens);
     event CampaignTerminated();
 
-    modifier onlyOwner(){
+    modifier onlyOwner() {
         require(msg.sender == owner, "Caller is not owner");
         _;
     }
 
-    modifier onlyActive(){
+    modifier onlyActive() {
         require(status == 1, "Campaign is not active");
         _;
     }
 
-    modifier noReentrancy(){
+    modifier noReentrancy() {
         require(!locked, "No Reentrancy");
         locked = true;
         _;
         locked = false;
+    }
+
+    modifier rateLimiter() {
+        require(block.timestamp >= requestsTimestamps[msg.sender] + REQUEST_INTERVAL, "Rate limit exceeded");
+        _;
+        requestsTimestamps[msg.sender] = block.timestamp;
     }
 
     constructor(
