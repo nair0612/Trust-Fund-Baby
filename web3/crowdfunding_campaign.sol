@@ -18,6 +18,7 @@ contract CrowdFundingCampaign{
     bool internal locked;
     mapping(address => uint256) internal requestsTimestamps;
     uint256 private constant REQUEST_INTERVAL = 5 seconds;
+    address public tokenContract;
 
     event CampaignCreated(address indexed owner, string title);
     event TokensDonated(address indexed donor, uint256 tokens);
@@ -31,6 +32,11 @@ contract CrowdFundingCampaign{
 
     modifier onlyActive() {
         require(status == 1, "Campaign is not active");
+        _;
+    }
+
+    modifier onlyEnded() {
+        require(status == 0, "Campaign is not ended");
         _;
     }
 
@@ -103,9 +109,8 @@ contract CrowdFundingCampaign{
         emit TokensWithdrawn(msg.sender, _numOfTokensWithdraw);
     }
 
-    function devWithdraw(uint256 _amountWithdraw) public payable onlyOwner noReentrancy{
+    function devWithdraw(uint256 _amountWithdraw) public payable onlyOwner noReentrancy onlyEnded{
         updateStatus();
-        require(status == 0, "Dev Withdraw failed: You cannot withdraw from active or terminated campaign");
         require(address(this).balance >= _amountWithdraw, "Dev Withdraw failed: Insufficient balance");
 
         payable(msg.sender).transfer(_amountWithdraw);
