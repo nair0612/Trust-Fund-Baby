@@ -33,6 +33,37 @@ contract CampaignFactory{
         return address(newCrowdFunding);
     }
 
+    function getAllCampaignsInfo() public view returns (
+        address[] memory campaignAddress,
+        address[] memory ownerAddress, 
+        string[] memory title, 
+        string[] memory description, 
+        string[] memory profileImage
+    ) {
+        address[] memory addresses = new address[](crowdfundingContracts.length);
+        address[] memory owners = new address[](crowdfundingContracts.length);
+        string[] memory titles = new string[](crowdfundingContracts.length);
+        string[] memory descriptions = new string[](crowdfundingContracts.length);
+        string[] memory profileImages = new string[](crowdfundingContracts.length);
+        
+        for (uint i = 0; i < crowdfundingContracts.length; i++) {
+            CrowdFundingCampaign campaign = CrowdFundingCampaign(crowdfundingContracts[i]);
+            addresses[i] = crowdfundingContracts[i];
+            owners[i] = campaign.owner();
+            titles[i] = campaign.title();
+            descriptions[i] = campaign.description();
+            profileImages[i] = campaign.profileImage();
+        }
+        
+        return (
+            addresses,
+            owners, 
+            titles, 
+            descriptions, 
+            profileImages
+        );
+    }
+
     struct BasicCampaignInfo {
         address campaignAddress;
         address owner;
@@ -55,6 +86,7 @@ contract CampaignFactory{
         }
         return campaigns;
     }
+
 
     struct FullCampaignInfo {
         address campaignAddress;
