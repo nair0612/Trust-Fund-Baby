@@ -28,6 +28,12 @@
             <hr>
             <div class="row">
                 <div class="col-md-8 cam-description">
+                    <div class="hidden values" hidden>
+                        {{this.campaignInfo.remainNumOfTokens}}
+                        {{this.campaignInfo.totalNumOfTokens}}
+                        {{this.campaignInfo.tokenPrice}}
+                        {{this.campaignInfo.campaignAddress}} 
+                    </div>
                     <div class="creator">
                         <h4>Campaign Creator</h4>
                         <p>Name of the creator : {{this.campaignInfo.owner}}</p>
@@ -76,13 +82,13 @@
                         <br>
                         <div class="row">
                             <div class="col">
-                                <label for="amount" class="form-label">Kindly enter the amount!!</label>
+                                <label for="tokens" class="form-label">Number of Tokens needed</label>
                                 <input
                                 type="number"
-                                step="0.01"
+                                step="1"
                                 class="form-control"
                                 id="amount"
-                                formControlName="amount"
+                                formControlName="tokens"
                                 />
                             </div>
                         </div>

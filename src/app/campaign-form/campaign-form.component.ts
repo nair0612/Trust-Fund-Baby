@@ -266,14 +266,14 @@ export class CampaignFormComponent implements OnInit {
     const {ethereum} = <any>window
     this.ethereum = ethereum
     this.camForm = this._fb.group({
-      fullName: '',
       campaignTitle: '',
       description: '',
       noTokens: '',
       tokenPrice: '',
-      goal: '',
       endDate: '',
       profileImage: '',
+      tokenName: '',
+      tokenSymbol: ''
     })
 
   }
@@ -315,44 +315,55 @@ checkWalletConnected = async () => {
 // }
 
 campaignForm = new FormGroup({
-  fullName: new FormControl("", [Validators.required, Validators.minLength(2)]),
   campaignTitle: new FormControl("", [Validators.required, Validators.minLength(10)]),
+  endDate: new FormControl("", [Validators.required]),
   description: new FormControl("", [Validators.required, Validators.minLength(10), Validators.maxLength(200)]),
   noTokens: new FormControl("", [Validators.required]),
   tokenPrice: new FormControl("", [Validators.required]),
-  goal: new FormControl("", [Validators.required]),
-  endDate: new FormControl("", [Validators.required]),
+  tokenName: new FormControl("", [Validators.required]),
+  tokenSymbol: new FormControl("", [Validators.required, Validators.minLength(3)]), 
   profileImage: new FormControl("", [Validators.required]),
 });
 
+hasDecimals(value: number): boolean {
+  return !Number.isInteger(value);
+}
+
 campaignSubmitted() {
   console.log(this.camForm.value);
-  if(this.camForm.value.fullName== '' || this.camForm.value.campaignTitle== '' || this.camForm.value.description== '' || this.camForm.value.noTokens== ''
-  || this.camForm.value.tokenPrice== '' || this.camForm.value.goal== '' || this.camForm.value.endDate== '' || this.camForm.value.profileImage== '') {
+  if(this.camForm.value.campaignTitle== '' || this.camForm.value.description== '' || this.camForm.value.noTokens== '' || this.camForm.value.tokenName== '' 
+  || this.camForm.value.tokenPrice== '' || this.camForm.value.tokenSymbol== '' || this.camForm.value.endDate== '' || this.camForm.value.profileImage== '') {
     alert('Please fill all the empty fields')
+  }
+  else if (this.hasDecimals(this.camForm.value.noTokens)) {
+    alert('Number of Tokens cannot be in decimal values')
   }
   else {
     try {
-    this.checkWalletConnected();
+    const currendate = new Date();
+    const enteredDate = new Date(this.camForm.value.endDate);
     const _owner = this.accountNo;
     const _title = this.camForm.value.campaignTitle;
     const _description = this.camForm.value.description;
-    const _goal = (this.camForm.value.goal)*10000000000;
-    const _tokenPrice = (this.camForm.value.tokenPrice)*10000000000;
-    const _numOfTokens = this.camForm.value.noTokens;
-    const _duration = 10;
+    const _goal = ((this.camForm.value.tokenPrice) * (this.camForm.value.noTokens) * (10**18));
+    const _durationInDays = 10;
     const _profileImage = this.camForm.value.profileImage;
-
+    const _tokenName = this.camForm.value.tokenName;
+    const _tokenSymbol = this.camForm.value.tokenSymbol;
+    const _tokenPrice = (this.camForm.value.tokenPrice) * (10**18);
+    const _tokenSupply = this.camForm.value.noTokens;
     this.contract.methods
   .createNewCrowdFunding(
     _owner,
     _title,
     _description,
     _goal,
+    _durationInDays,
+    _profileImage,
+    _tokenName,
+    _tokenSymbol,
     _tokenPrice,
-    _numOfTokens,
-    _duration,
-    _profileImage
+    _tokenSupply,
   )
   .send({ from: this.accountNo })
   .then((receipt: any) => {
@@ -366,10 +377,6 @@ campaignSubmitted() {
 }
 
 
-
- get FullName(): FormControl{
-  return this.campaignForm.get("fullName") as FormControl;
- }
 
  get CampaignTitle(): FormControl{
   return this.campaignForm.get("campaignTitle") as FormControl;
@@ -387,16 +394,20 @@ campaignSubmitted() {
   return this.campaignForm.get("tokenPrice") as FormControl;
  }
 
- get Goal(): FormControl{
-  return this.campaignForm.get("goal") as FormControl;
- }
-
  get EndDate(): FormControl{
   return this.campaignForm.get("endDate") as FormControl;
  }
 
  get profileImage(): FormControl{
   return this.campaignForm.get("profileImage") as FormControl;
+ }
+
+ get TokenName(): FormControl{
+  return this.campaignForm.get("tokenName") as FormControl;
+ }
+
+ get TokenSymbol(): FormControl{
+  return this.campaignForm.get("tokenSymbol") as FormControl;
  }
 
 }

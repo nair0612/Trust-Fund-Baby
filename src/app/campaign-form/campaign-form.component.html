@@ -11,27 +11,6 @@
     </div>
     <div class="row">
       <div class="col" style="margin-bottom: 0">
-        <label for="fullName" class="form-label">Full Name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="fullName"
-          formControlName="fullName"
-        />
-        <div
-          class="form-text text-danger"
-          *ngIf="FullName.errors?.['required'] && (FullName.touched || FullName.dirty)"
-        >
-          Full Name is Required
-        </div>
-        <div
-          class="form-text text-danger"
-          *ngIf="FullName.errors?.['minlengh'] && (FullName.touched || FullName.dirty)"
-        >
-          Full Name is too short
-        </div>
-      </div>
-      <div class="col" style="margin-bottom: 0">
         <label for="campaignTitle" class="form-label">Campaign Title</label>
         <input
           type="text"
@@ -50,6 +29,21 @@
           *ngIf="CampaignTitle.errors?.['minlengh'] && (CampaignTitle.touched || CampaignTitle.dirty)"
         >
           Campaign Title is too short
+        </div>
+      </div>
+      <div class="col">
+        <label for="endDate" class="form-label">End Date</label>
+        <input
+          type="date"
+          class="form-control"
+          id="endDate"
+          formControlName="endDate"
+        />
+        <div
+          class="form-text text-danger"
+          *ngIf="EndDate.errors?.['required'] && (EndDate.touched || EndDate.dirty)"
+        >
+          End Date is Required
         </div>
       </div>
     </div>
@@ -119,38 +113,24 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
-        <label for="goal" class="form-label">Goal</label>
+      <div class="col" style="margin-bottom: 1">
+        <label for="tokenName" class="form-label">Token Name</label>
         <input
-          type="number"
-          step="0.01"
-          [disabled]="isDisabled"
+          type="text"
           class="form-control"
-          id="goal"
-          formControlName="goal"
-        />
-        <div
-          class="form-text text-danger"
-          *ngIf="Goal.errors?.['required'] && (Goal.touched || Goal.dirty)"
-        >
-          Goal is Required
-        </div>
+          id="tokenName"
+          formControlName="tokenName"
+        />       
       </div>
-      <div class="col">
-        <label for="endDate" class="form-label">End Date</label>
+      <div class="col" style="margin-bottom: 1">
+        <label for="tokenSymbol" class="form-label">Token Symbol</label>
         <input
-          type="date"
+          type="text"
           class="form-control"
-          id="endDate"
-          formControlName="endDate"
-        />
-        <div
-          class="form-text text-danger"
-          *ngIf="EndDate.errors?.['required'] && (EndDate.touched || EndDate.dirty)"
-        >
-          End Date is Required
-        </div>
-      </div>
+          id="tokenSymbol"
+          formControlName="tokenSymbol"
+        />        
+      </div>     
     </div>
     <div class="row">
       <div class="col mb-3">
