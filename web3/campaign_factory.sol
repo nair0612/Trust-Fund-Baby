@@ -6,6 +6,13 @@ pragma solidity >=0.7.0 <0.9.0;
 
 contract CampaignFactory{
     address[] public crowdfundingContracts; // address array to store all campaign contracts addresses
+
+    event FeeReceived(address sender, uint256 amount);
+
+    receive() external payable {
+        emit FeeReceived(msg.sender, msg.value);
+    }
+
     
     // function: create a new campaign and store the address in array
     function createNewCrowdFunding(
@@ -32,7 +39,8 @@ contract CampaignFactory{
             tokenName,
             tokenSymbol,
             tokenPrice,
-            tokenSupply
+            tokenSupply,
+            payable(address(this))
         );
         // append new campaign address to array
         crowdfundingContracts.push(address(newCrowdFunding));
@@ -106,4 +114,5 @@ contract CampaignFactory{
 
         return campaignInfoComplete;
     }
+
 }

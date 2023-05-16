@@ -16,6 +16,7 @@ contract CrowdFundingCampaign{
     uint256 public status;
     address[] public donorAddresses;
     mapping(address => uint256) public donations;
+    address payable private factoryAddress;
 
     // security variables
     bool private locked;
@@ -56,6 +57,10 @@ contract CrowdFundingCampaign{
     }
 
     // modifier: only after token has been created
+    modifier afterTokenCreation() {
+        require(tokenCreated, "Token has not been created");
+        _;
+    }
 
     // modifier: only active campaigns can call
     modifier onlyActive() {
@@ -98,7 +103,10 @@ contract CrowdFundingCampaign{
         string memory _tokenName,
         string memory _tokenSymbol,
         uint256 _tokenPrice,
-        uint256 _tokenSupply
+        uint256 _tokenSupply,
+
+        // factory info
+        address payable _factoryAddress
     ) {
         // campaign info
         owner = _owner;
@@ -119,11 +127,14 @@ contract CrowdFundingCampaign{
         tokenSupply = _tokenSupply;
         tokenCreated = false;
 
+        // factory info
+        factoryAddress = _factoryAddress;
+
         emit CampaignCreated(owner, title);
     }
 
     // function: donor donate to campaign (before campaign ends)
-    function donateToCampaign(uint256 _numOfTokensDonate) public payable onlyActive {
+    function donateToCampaign(uint256 _numOfTokensDonate) public payable onlyActive notOwner{
         updateStatus();
         require(msg.value == _numOfTokensDonate * tokenPrice, "Donation failed: Invalid donation amount");
         require(tokenRemain >= _numOfTokensDonate, "Donation failed: Not enough tokens remain");
@@ -160,10 +171,12 @@ contract CrowdFundingCampaign{
     }
 
     // function: dev withdraw from campaign (after campaign ends)
-    function devWithdraw(uint256 _amountWithdraw) public payable onlyOwner noReentrancy onlyEnded{
-        require(address(this).balance >= _amountWithdraw, "Dev Withdraw failed: Insufficient balance");
-
-        payable(msg.sender).transfer(_amountWithdraw);
+    function devWithdraw() public payable onlyOwner noReentrancy onlyEnded afterTokenCreation{
+        uint256 balance = address(this).balance;
+        require(address(this).balance > 0, "Dev Withdraw failed: Insufficient balance");
+        uint256 fee = address(this).balance * 3 / 100;
+        collectFees(fee);
+        payable(msg.sender).transfer(balance - fee);
     }
 
     // function: dev terminate the campaign (before campaign ends)
@@ -183,7 +196,7 @@ contract CrowdFundingCampaign{
     }
 
     // function: mint new tokens (after campaign ends)
-    function createNewToken() public onlyEnded returns (address) {
+    function createNewToken() private onlyEnded returns (address) {
         require(!tokenCreated, "Create Token failed: Tokens already minted");
         CampaignToken newCampaignToken = new CampaignToken(
             tokenName,
@@ -197,8 +210,7 @@ contract CrowdFundingCampaign{
     }
 
     // function: transfer the tokens to donor (after campaign ends)
-    function distributeTokens() public onlyEnded noReentrancy {
-        require(tokenCreated, "Transfer Token failed: Tokens not created");
+    function distributeTokens() private onlyEnded noReentrancy afterTokenCreation {
         for (uint256 i=0; i < donorAddresses.length; i++) {
             address donor = donorAddresses[i];
             uint256 tokens = donations[donor] * 1e18;
@@ -209,8 +221,16 @@ contract CrowdFundingCampaign{
         }
     }
 
-    function redeemTokens(uint256 _numOfTokens) public noReentrancy {
-        
+    function redeemTokens(uint256 _numOfTokens) public noReentrancy afterTokenCreation{
+        CampaignToken(tokenAddress).approve(address(this), _numOfTokens * 1e18);
+        require(CampaignToken(tokenAddress).allowance(msg.sender, address(this)) >= _numOfTokens * 1e18, "Insufficient allowance");
+        CampaignToken(tokenAddress).burnFrom(msg.sender, _numOfTokens * 1e18);
+    }
+
+    // function: collect fees
+    function collectFees(uint256 fee) public payable onlyEnded{
+        require(address(this).balance >= fee, "Insufficient contract balance");
+        payable(factoryAddress).transfer(fee);
     }
 
 }
