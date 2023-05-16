@@ -1,4 +1,15 @@
 .my-container-wrap {
-    padding: 10px;
-    align-items: flex-start;
-  }
+  padding: 0px 10px 10px 10px;
+  align-items: flex;
+}
+
+.my-container__search {
+  padding: 0px 10px 10px 0px;
+  top: 0;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

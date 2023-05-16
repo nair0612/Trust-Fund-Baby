@@ -1,5 +1,5 @@
 input[type=text] {
-  width: 130px;
+  width: 50%;
   box-sizing: border-box;
   border: 1px solid #ccc;
   height: 60%;
@@ -16,5 +16,11 @@ input[type=text] {
 }
 
 input[type=text]:focus {
-  width: 255%;
+  width: 50%;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

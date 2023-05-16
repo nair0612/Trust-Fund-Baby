@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CampaignconnectionService } from '../services/campaignconnection.service';
-import { ContractService } from '../services/contract-services';
+import { ContractService } from '../services/contract-services'
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-campaign-details',

@@ -30,8 +30,8 @@ import Web3 from "web3";
     HomePageComponent,
     MyCampaignComponent,
     MyInvestmentComponent,
-    HeaderComponent,
-    CampaignDetailsComponent
+    CampaignDetailsComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +41,8 @@ import Web3 from "web3";
     HttpClientModule,
     FlexLayoutModule,
     MaterialModule,
-    SwiperModule
+    SwiperModule,
+    FormsModule
   ],
   providers: [{ provide: Web3, useClass: Web3 }],
   bootstrap: [AppComponent]

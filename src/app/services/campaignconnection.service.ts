@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 import { WalletService } from '../services/wallet.service';
-import { Observable, catchError, from, map, of } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
 
 
 @Injectable({
@@ -250,7 +250,9 @@ export class CampaignconnectionService {
   ) { 
     const {ethereum} = <any>window
     this.ethereum = ethereum
+  }
 
+  async checkConnection() {
     if (this.ethereum) {
       if (!this.checkWalletConnected()) {
         this.connectToWallet();
@@ -261,9 +263,8 @@ export class CampaignconnectionService {
       console.log(this.accountNo);
       this.web3 = new Web3(this.ethereum);
       try {
-        this.ethereum.enable().then(() => {
-          this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
-        });
+        await this.ethereum.enable();
+        this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
       } catch (e) {
         console.log(e);
       }
@@ -284,6 +285,7 @@ export class CampaignconnectionService {
 
   getCampaignDetails(param: string): Observable<any> {
     try {
+      this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress)
       return from(this.contract.methods.getCampaignInfoByAddress(param).call())
       .pipe(
         map((result) => {
@@ -301,4 +303,28 @@ export class CampaignconnectionService {
     return of(err);
     }
   }
+
+  getAllCampaign(): Observable<any> {
+  try {
+    return from(this.ethereum.enable())
+      .pipe(
+        switchMap(() => {
+          this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
+          return from(this.contract.methods.retrieveAllCampaignInfo().call());
+        }),
+        map((result) => {
+          console.log(result);
+          return result;
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(null);
+        })
+      );
+  } catch (err) {
+    console.error(err);
+    return of(err);
+  }
+}
+
 }

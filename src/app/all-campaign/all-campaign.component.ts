@@ -1,17 +1,23 @@
 import { Component, Input } from '@angular/core';
 import { ContractService } from '../services/contract-services';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { CampaignconnectionService } from '../services/campaignconnection.service';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-all-campaign',
   templateUrl: './all-campaign.component.html',
-  styleUrls: ['./all-campaign.component.css']
+  styleUrls: ['./all-campaign.component.css'],
 })
 export class AllCampaignComponent {
   cardDataList : any;
   campaignInfo: any;
   campaignAddress = '0x100660EFBE3c77A4Ac6A5A734422D6a488c3B77a'; // Replace with the actual campaign address
 
-  constructor(private contractService: ContractService) {}
+  constructor(private contractService: ContractService, private route: ActivatedRoute,
+    private campaignConnectionService: CampaignconnectionService) {}
 
   getCampaignInfo() {
     this.contractService
@@ -36,4 +42,19 @@ export class AllCampaignComponent {
         console.error('Error:', error);
       });
   }
+
+  data: any;
+
+  searchText: string = '';
+
+  onSearchTextEntered(searchValue: string) {
+    this.searchText = searchValue;
+    const regex = new RegExp(this.searchText, 'i'); // 'i' flag for case-insensitive search
+    this.visibleCardDataList = this.cardDataList
+      .filter((item) => regex.test(item.title)) // Non-specific search using regular expression
+      .slice(0, 12); // Reset visibleCardDataList with filtered results
+    console.log(this.searchText);
+  }
+
+
 }
