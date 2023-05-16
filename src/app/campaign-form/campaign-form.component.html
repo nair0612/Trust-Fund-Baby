@@ -154,16 +154,16 @@
     </div>
     <div class="row">
       <div class="col mb-3">
-        <label for="imageURL" class="form-label">Campaign Image URL</label>
+        <label for="profileImage" class="form-label">Campaign Image URL</label>
         <input
           type="text"
           class="form-control"
-          id="imageURL"
-          formControlName="imageURL"
+          id="profileImage"
+          formControlName="profileImage"
         />
         <div
           class="form-text text-danger"
-          *ngIf="ImageURL.errors?.['required'] && (ImageURL.touched || ImageURL.dirty)"
+          *ngIf="profileImage.errors?.['required'] && (profileImage.touched || profileImage.dirty)"
         >
           Image URL is Required
         </div>
