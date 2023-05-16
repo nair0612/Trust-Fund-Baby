@@ -24,14 +24,8 @@ export class CampaignFormComponent implements OnInit {
   accountNo: string[];
   web3: Web3;
   contract: Contract;
-  contractAddress : string = '0xC2C65EDDB5F8a6bAFdAE460bB26B8104F1Faa595';
+  contractAddress : string = '0x5033D7A468D204495813041a28c7f254cF02fab0';
   contractABI : any = [
-    {
-      "anonymous": false,
-      "inputs": [],
-      "name": "CampaignCreated",
-      "type": "event"
-    },
     {
       "inputs": [
         {
@@ -66,7 +60,7 @@ export class CampaignFormComponent implements OnInit {
         },
         {
           "internalType": "uint256",
-          "name": "_duration",
+          "name": "_durationInDays",
           "type": "uint256"
         },
         {
@@ -100,6 +94,39 @@ export class CampaignFormComponent implements OnInit {
           "internalType": "address",
           "name": "",
           "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllCampaignsInfo",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "campaignAddress",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "ownerAddress",
+          "type": "address[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "title",
+          "type": "string[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "description",
+          "type": "string[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "profileImage",
+          "type": "string[]"
         }
       ],
       "stateMutability": "view",
@@ -159,6 +186,11 @@ export class CampaignFormComponent implements OnInit {
             },
             {
               "internalType": "uint256",
+              "name": "creationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "deadline",
               "type": "uint256"
             },
@@ -168,14 +200,9 @@ export class CampaignFormComponent implements OnInit {
               "type": "string"
             },
             {
-              "internalType": "bool",
-              "name": "isActive",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "terminated",
-              "type": "bool"
+              "internalType": "uint256",
+              "name": "status",
+              "type": "uint256"
             }
           ],
           "internalType": "struct CampaignFactory.FullCampaignInfo",
@@ -226,7 +253,7 @@ export class CampaignFormComponent implements OnInit {
       "stateMutability": "view",
       "type": "function"
     }
-  ];
+  ]
 
 
   constructor(
@@ -246,7 +273,7 @@ export class CampaignFormComponent implements OnInit {
       tokenPrice: '',
       goal: '',
       endDate: '',
-      imageURL: '',
+      profileImage: '',
     })
 
   }
@@ -295,13 +322,13 @@ campaignForm = new FormGroup({
   tokenPrice: new FormControl("", [Validators.required]),
   goal: new FormControl("", [Validators.required]),
   endDate: new FormControl("", [Validators.required]),
-  imageURL: new FormControl("", [Validators.required]),
+  profileImage: new FormControl("", [Validators.required]),
 });
 
 campaignSubmitted() {
   console.log(this.camForm.value);
   if(this.camForm.value.fullName== '' || this.camForm.value.campaignTitle== '' || this.camForm.value.description== '' || this.camForm.value.noTokens== ''
-  || this.camForm.value.tokenPrice== '' || this.camForm.value.goal== '' || this.camForm.value.endDate== '' || this.camForm.value.imageURL== '') {
+  || this.camForm.value.tokenPrice== '' || this.camForm.value.goal== '' || this.camForm.value.endDate== '' || this.camForm.value.profileImage== '') {
     alert('Please fill all the empty fields')
   }
   else {
@@ -314,7 +341,7 @@ campaignSubmitted() {
     const _tokenPrice = (this.camForm.value.tokenPrice)*10000000000;
     const _numOfTokens = this.camForm.value.noTokens;
     const _duration = 10;
-    const _profileImage = this.camForm.value.imageURL;
+    const _profileImage = this.camForm.value.profileImage;
 
     this.contract.methods
   .createNewCrowdFunding(
@@ -368,8 +395,8 @@ campaignSubmitted() {
   return this.campaignForm.get("endDate") as FormControl;
  }
 
- get ImageURL(): FormControl{
-  return this.campaignForm.get("imageURL") as FormControl;
+ get profileImage(): FormControl{
+  return this.campaignForm.get("profileImage") as FormControl;
  }
 
 }

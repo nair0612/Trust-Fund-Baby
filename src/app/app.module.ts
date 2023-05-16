@@ -18,6 +18,7 @@ import { MyCampaignComponent } from './my-campaign/my-campaign.component';
 import { MyInvestmentComponent } from './my-investment/my-investment.component';
 import { HeaderComponent } from './header/header.component';
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
+import Web3 from "web3";
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +44,7 @@ import { CampaignDetailsComponent } from './campaign-details/campaign-details.co
     SwiperModule,
     FormsModule
   ],
-  providers: [],
+  providers: [{ provide: Web3, useClass: Web3 }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

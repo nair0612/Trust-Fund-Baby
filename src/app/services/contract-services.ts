@@ -1,21 +1,9 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import { WalletService } from '../services/wallet.service';
-import { Observable, catchError, from, map, of, switchMap } from 'rxjs';
 
 
-@Injectable({
-  providedIn: 'root'
-})
-export class CampaignconnectionService {
-  web3: Web3;
-  public ethereum;
-  accountNo: string[];
-  data: any;
-  contract: Contract;
-  contractAddress : string = '0x5033D7A468D204495813041a28c7f254cF02fab0';
-  contractABI : any = [
+const contractABI = [
     {
       "inputs": [
         {
@@ -243,88 +231,56 @@ export class CampaignconnectionService {
       "stateMutability": "view",
       "type": "function"
     }
-  ]
+  ];
 
-  constructor(
-    private _walletService : WalletService,
-  ) { 
-    const {ethereum} = <any>window
-    this.ethereum = ethereum
-  }
-
-  async checkConnection() {
-    if (this.ethereum) {
-      if (!this.checkWalletConnected()) {
-        this.connectToWallet();
-      }
-      else {
-        this.checkWalletConnected();
-      }
-      console.log(this.accountNo);
-      this.web3 = new Web3(this.ethereum);
-      try {
-        await this.ethereum.enable();
-        this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
-      } catch (e) {
-        console.log(e);
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class ContractService {
+    private contract: Contract;
+    private contractAddress = '0x5033D7A468D204495813041a28c7f254cF02fab0'; // Replace with the deployed contract address
+  
+    constructor() {
+      if (typeof (window as any).ethereum !== 'undefined') {
+        const web3 = new Web3((window as any).ethereum);
+        this.contract = new web3.eth.Contract(contractABI as any, this.contractAddress);
+      } else {
+        console.log('Please install MetaMask or another Ethereum-compatible browser extension.');
       }
     }
-  }
+    
   
-
-  connectToWallet = async () => {
-    const accounts = await this._walletService.connectWallet();
-  }
+    createNewCrowdFunding(
+      _owner: string,
+      _title: string,
+      _description: string,
+      _goal: number,
+      _tokenPrice: number,
+      _numOfTokens: number,
+      _durationInDays: number,
+      _profileImage: string
+    ): Promise<any> {
+      return this.contract.methods.createNewCrowdFunding(
+        _owner,
+        _title,
+        _description,
+        _goal,
+        _tokenPrice,
+        _numOfTokens,
+        _durationInDays,
+        _profileImage
+      ).send({ from: '<your-wallet-address>' });
+    }
   
-  checkWalletConnected = async () => {
-   const accounts = await this._walletService.checkWalletConnected();
-   if(accounts.length >0) {
-     this.accountNo = accounts[0];
-   }
-  }
-
-  getCampaignDetails(param: string): Observable<any> {
-    try {
-      this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress)
-      return from(this.contract.methods.getCampaignInfoByAddress(param).call())
-      .pipe(
-        map((result) => {
-          console.log(result);
-          return result;
-        }),
-        catchError((error) => {
-          console.error(error);
-          return of(null);
-        })
-      );
-  }
-  catch(err) {
-    console.error(err);
-    return of(err);
+    getAllCampaignsInfo(): Promise<any> {
+      return this.contract.methods.getAllCampaignsInfo().call();
+    }
+  
+    retrieveAllCampaignInfo(): Promise<any> {
+      return this.contract.methods.retrieveAllCampaignInfo().call();
+    }
+  
+    getCampaignInfoByAddress(campaignAddress: string): Promise<any> {
+      return this.contract.methods.getCampaignInfoByAddress(campaignAddress).call();
     }
   }
-
-  getAllCampaign(): Observable<any> {
-  try {
-    return from(this.ethereum.enable())
-      .pipe(
-        switchMap(() => {
-          this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
-          return from(this.contract.methods.retrieveAllCampaignInfo().call());
-        }),
-        map((result) => {
-          console.log(result);
-          return result;
-        }),
-        catchError((error) => {
-          console.error(error);
-          return of(null);
-        })
-      );
-  } catch (err) {
-    console.error(err);
-    return of(err);
-  }
-}
-
-}

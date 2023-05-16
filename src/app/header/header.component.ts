@@ -17,6 +17,7 @@ export class HeaderComponent {
 
   public walletConnected : boolean = false;
   public walletId : string = '';
+  router: any;
 
   constructor(
     private _dialog: MatDialog,
@@ -44,6 +45,10 @@ export class HeaderComponent {
   ngOnInit() : void {
     // this.connectToWallet();
     this.checkWalletConnected();
+  }
+
+  openMyCampaign() {
+    this.router.navigate(['/MyCampaign']);
   }
 
 }
