@@ -1,31 +1,9 @@
-import { Component, Inject, OnInit, Injectable } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CampaignService } from '../services/campaign.service';
-import { WalletService } from '../services/wallet.service';
+import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 
-@Injectable({
-  providedIn: 'root'
-})
 
-@Component({
-  selector: 'app-campaign-form',
-  templateUrl: './campaign-form.component.html',
-  styleUrls: ['./campaign-form.component.css']
-})
-export class CampaignFormComponent implements OnInit {
-  isDisabled: boolean = true
-  camForm: FormGroup;
-  public ethereum;
-  accountNo: string[];
-  web3: Web3;
-  contract: Contract;
-  contractAddress : string = '0x5033D7A468D204495813041a28c7f254cF02fab0';
-  contractABI : any = [
+const contractABI = [
     {
       "inputs": [
         {
@@ -253,150 +231,56 @@ export class CampaignFormComponent implements OnInit {
       "stateMutability": "view",
       "type": "function"
     }
-  ]
+  ];
 
-
-  constructor(
-    private _fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private _camService: CampaignService,
-    private _dialogRef: MatDialogRef<CampaignFormComponent>,
-    private _walletService : WalletService
-  ) { 
-    const {ethereum} = <any>window
-    this.ethereum = ethereum
-    this.camForm = this._fb.group({
-      fullName: '',
-      campaignTitle: '',
-      description: '',
-      noTokens: '',
-      tokenPrice: '',
-      goal: '',
-      endDate: '',
-      profileImage: '',
-    })
-
-  }
-
-  ngOnInit() : void {
-  this.camForm.patchValue(this.data);
-  if (this.ethereum) {
-    if (!this.checkWalletConnected()) {
-      this.connectToWallet();
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class ContractService {
+    private contract: Contract;
+    private contractAddress = '0x5033D7A468D204495813041a28c7f254cF02fab0'; // Replace with the deployed contract address
+  
+    constructor() {
+      if (typeof (window as any).ethereum !== 'undefined') {
+        const web3 = new Web3((window as any).ethereum);
+        this.contract = new web3.eth.Contract(contractABI as any, this.contractAddress);
+      } else {
+        console.log('Please install MetaMask or another Ethereum-compatible browser extension.');
+      }
     }
-    else {
-      this.checkWalletConnected();
+    
+  
+    createNewCrowdFunding(
+      _owner: string,
+      _title: string,
+      _description: string,
+      _goal: number,
+      _tokenPrice: number,
+      _numOfTokens: number,
+      _durationInDays: number,
+      _profileImage: string
+    ): Promise<any> {
+      return this.contract.methods.createNewCrowdFunding(
+        _owner,
+        _title,
+        _description,
+        _goal,
+        _tokenPrice,
+        _numOfTokens,
+        _durationInDays,
+        _profileImage
+      ).send({ from: '<your-wallet-address>' });
     }
-    console.log(this.accountNo);
-    this.web3 = new Web3(this.ethereum);
-    try {
-      this.ethereum.enable().then(() => {
-        this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
-      });
-    } catch (e) {
-      console.log(e);
+  
+    getAllCampaignsInfo(): Promise<any> {
+      return this.contract.methods.getAllCampaignsInfo().call();
+    }
+  
+    retrieveAllCampaignInfo(): Promise<any> {
+      return this.contract.methods.retrieveAllCampaignInfo().call();
+    }
+  
+    getCampaignInfoByAddress(campaignAddress: string): Promise<any> {
+      return this.contract.methods.getCampaignInfoByAddress(campaignAddress).call();
     }
   }
-}
-
-connectToWallet = async () => {
-  const accounts = await this._walletService.connectWallet();
-}
-
-checkWalletConnected = async () => {
- const accounts = await this._walletService.checkWalletConnected();
- if(accounts.length >0) {
-   this.accountNo = accounts[0];
- }
-}
-
-// private loadContract(): void {
-//   this.contract = new this.web3.eth.Contract(this.contractABI, this.contractAddress);
-// }
-
-campaignForm = new FormGroup({
-  fullName: new FormControl("", [Validators.required, Validators.minLength(2)]),
-  campaignTitle: new FormControl("", [Validators.required, Validators.minLength(10)]),
-  description: new FormControl("", [Validators.required, Validators.minLength(10), Validators.maxLength(200)]),
-  noTokens: new FormControl("", [Validators.required]),
-  tokenPrice: new FormControl("", [Validators.required]),
-  goal: new FormControl("", [Validators.required]),
-  endDate: new FormControl("", [Validators.required]),
-  profileImage: new FormControl("", [Validators.required]),
-});
-
-campaignSubmitted() {
-  console.log(this.camForm.value);
-  if(this.camForm.value.fullName== '' || this.camForm.value.campaignTitle== '' || this.camForm.value.description== '' || this.camForm.value.noTokens== ''
-  || this.camForm.value.tokenPrice== '' || this.camForm.value.goal== '' || this.camForm.value.endDate== '' || this.camForm.value.profileImage== '') {
-    alert('Please fill all the empty fields')
-  }
-  else {
-    try {
-    this.checkWalletConnected();
-    const _owner = this.accountNo;
-    const _title = this.camForm.value.campaignTitle;
-    const _description = this.camForm.value.description;
-    const _goal = (this.camForm.value.goal)*10000000000;
-    const _tokenPrice = (this.camForm.value.tokenPrice)*10000000000;
-    const _numOfTokens = this.camForm.value.noTokens;
-    const _duration = 10;
-    const _profileImage = this.camForm.value.profileImage;
-
-    this.contract.methods
-  .createNewCrowdFunding(
-    _owner,
-    _title,
-    _description,
-    _goal,
-    _tokenPrice,
-    _numOfTokens,
-    _duration,
-    _profileImage
-  )
-  .send({ from: this.accountNo })
-  .then((receipt: any) => {
-    console.log(receipt);
-    this._dialogRef.close();
-  });
-  } catch(error) {
-  console.error(error);
-  }
-  }
-}
-
-
-
- get FullName(): FormControl{
-  return this.campaignForm.get("fullName") as FormControl;
- }
-
- get CampaignTitle(): FormControl{
-  return this.campaignForm.get("campaignTitle") as FormControl;
- }
-
- get Description(): FormControl{
-  return this.campaignForm.get("description") as FormControl;
- }
-
- get NoTokens(): FormControl{
-  return this.campaignForm.get("noTokens") as FormControl;
- }
-
- get TokenPrice(): FormControl{
-  return this.campaignForm.get("tokenPrice") as FormControl;
- }
-
- get Goal(): FormControl{
-  return this.campaignForm.get("goal") as FormControl;
- }
-
- get EndDate(): FormControl{
-  return this.campaignForm.get("endDate") as FormControl;
- }
-
- get profileImage(): FormControl{
-  return this.campaignForm.get("profileImage") as FormControl;
- }
-
-}

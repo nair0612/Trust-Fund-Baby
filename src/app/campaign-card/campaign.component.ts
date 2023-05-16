@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core'
 import { Router } from '@angular/router';
 
 interface CardData {
-  imageUrl: string;
+  profileImage: string;
   title: string;
   description: string;
+  campaignAddress : string;
 }
 @Component({
   selector: 'app-campaign',

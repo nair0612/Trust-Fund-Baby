@@ -14,14 +14,8 @@ export class CampaignconnectionService {
   accountNo: string[];
   data: any;
   contract: Contract;
-  contractAddress : string = '0xC2C65EDDB5F8a6bAFdAE460bB26B8104F1Faa595';
+  contractAddress : string = '0x5033D7A468D204495813041a28c7f254cF02fab0';
   contractABI : any = [
-    {
-      "anonymous": false,
-      "inputs": [],
-      "name": "CampaignCreated",
-      "type": "event"
-    },
     {
       "inputs": [
         {
@@ -56,7 +50,7 @@ export class CampaignconnectionService {
         },
         {
           "internalType": "uint256",
-          "name": "_duration",
+          "name": "_durationInDays",
           "type": "uint256"
         },
         {
@@ -90,6 +84,39 @@ export class CampaignconnectionService {
           "internalType": "address",
           "name": "",
           "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllCampaignsInfo",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "campaignAddress",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "ownerAddress",
+          "type": "address[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "title",
+          "type": "string[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "description",
+          "type": "string[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "profileImage",
+          "type": "string[]"
         }
       ],
       "stateMutability": "view",
@@ -149,6 +176,11 @@ export class CampaignconnectionService {
             },
             {
               "internalType": "uint256",
+              "name": "creationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "deadline",
               "type": "uint256"
             },
@@ -158,14 +190,9 @@ export class CampaignconnectionService {
               "type": "string"
             },
             {
-              "internalType": "bool",
-              "name": "isActive",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "terminated",
-              "type": "bool"
+              "internalType": "uint256",
+              "name": "status",
+              "type": "uint256"
             }
           ],
           "internalType": "struct CampaignFactory.FullCampaignInfo",
@@ -216,7 +243,7 @@ export class CampaignconnectionService {
       "stateMutability": "view",
       "type": "function"
     }
-  ];
+  ]
 
   constructor(
     private _walletService : WalletService,
