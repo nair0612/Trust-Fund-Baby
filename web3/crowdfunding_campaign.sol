@@ -14,6 +14,7 @@ contract CrowdFundingCampaign{
     uint256 public deadline;
     string public profileImage;
     uint256 public status;
+    address[] public donorAddresses;
     mapping(address => uint256) public donations;
 
     // security variables
@@ -42,11 +43,19 @@ contract CrowdFundingCampaign{
         _;
     }
 
-    // modifier: only donor can call
-    modifier onlyDonor() {
-        require(msg.sender != owner, "Caller is not donor");
+    // modifier: owner cannot call
+    modifier notOwner(){
+        require(msg.sender != owner, "Caller should not be owner");
         _;
     }
+
+    // modifier: only donor can call
+    modifier onlyDonor() {
+        require(donations[msg.sender] > 0, "Caller is not donor");
+        _;
+    }
+
+    // modifier: only after token has been created
 
     // modifier: only active campaigns can call
     modifier onlyActive() {
@@ -113,12 +122,13 @@ contract CrowdFundingCampaign{
         emit CampaignCreated(owner, title);
     }
 
-    // function: donor donate to campaign
-    function donateToCampaign(uint256 _numOfTokensDonate) public payable onlyActive onlyDonor{
+    // function: donor donate to campaign (before campaign ends)
+    function donateToCampaign(uint256 _numOfTokensDonate) public payable onlyActive {
         updateStatus();
         require(msg.value == _numOfTokensDonate * tokenPrice, "Donation failed: Invalid donation amount");
         require(tokenRemain >= _numOfTokensDonate, "Donation failed: Not enough tokens remain");
         
+        donorAddresses.push(msg.sender);
         donations[msg.sender] += _numOfTokensDonate;
         tokenRemain -= _numOfTokensDonate;
         if (tokenRemain == 0) {
@@ -131,10 +141,12 @@ contract CrowdFundingCampaign{
     function updateStatus() internal onlyActive {
         if (tokenRemain == 0 || block.timestamp >= deadline) {
             status = 0;
+            createNewToken();
+            distributeTokens();
         }
     }
 
-    // function: donor withdraw from donated campaign (before it ends)
+    // function: donor withdraw from donated campaign (before campaign ends)
     function withdrawFromCampaign(uint256 _numOfTokensWithdraw) public payable noReentrancy onlyActive onlyDonor{
         updateStatus();
         require(donations[msg.sender] >= _numOfTokensWithdraw, "Withdraw failed: Not enough tokens donated");
@@ -147,14 +159,14 @@ contract CrowdFundingCampaign{
         emit TokensWithdrawn(msg.sender, _numOfTokensWithdraw);
     }
 
-    // function: dev withdraw from campaign (after it ends)
+    // function: dev withdraw from campaign (after campaign ends)
     function devWithdraw(uint256 _amountWithdraw) public payable onlyOwner noReentrancy onlyEnded{
         require(address(this).balance >= _amountWithdraw, "Dev Withdraw failed: Insufficient balance");
 
         payable(msg.sender).transfer(_amountWithdraw);
     }
 
-    // function: dev terminate the campaign (before it ends)
+    // function: dev terminate the campaign (before campaign ends)
     function terminateCampaign() public onlyOwner onlyActive{
         updateStatus();
         status = 2;
@@ -170,9 +182,9 @@ contract CrowdFundingCampaign{
         donations[msg.sender] = 0;
     }
 
-    // function: mint new tokens (after it ends)
+    // function: mint new tokens (after campaign ends)
     function createNewToken() public onlyEnded returns (address) {
-        require (!tokenCreated, "Create Token failed: Tokens already minted");
+        require(!tokenCreated, "Create Token failed: Tokens already minted");
         CampaignToken newCampaignToken = new CampaignToken(
             tokenName,
             tokenSymbol,
@@ -184,13 +196,21 @@ contract CrowdFundingCampaign{
         return address(newCampaignToken);
     }
 
-    function distributeTokensToAddress(address investorAddress) public onlyOwner onlyEnded {
-        require(tokenAddress != address(0), "Token address is not set");
-        CampaignToken campaignToken = CampaignToken(tokenAddress);
-        uint256 tokensToDistribute = donations[investorAddress];
-        require(tokensToDistribute > 0, "No tokens to distribute for the given address");
+    // function: transfer the tokens to donor (after campaign ends)
+    function distributeTokens() public onlyEnded noReentrancy {
+        require(tokenCreated, "Transfer Token failed: Tokens not created");
+        for (uint256 i=0; i < donorAddresses.length; i++) {
+            address donor = donorAddresses[i];
+            uint256 tokens = donations[donor] * 1e18;
+            if (tokens > 0) {
+                CampaignToken(tokenAddress).transfer(donor, tokens);
+                donations[donor] = 0;
+            }
+        }
+    }
 
-        campaignToken.transfer(investorAddress, tokensToDistribute);
+    function redeemTokens(uint256 _numOfTokens) public noReentrancy {
+        
     }
 
 }
