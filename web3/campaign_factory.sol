@@ -5,82 +5,47 @@ import "./crowdfunding_campaign.sol";
 pragma solidity >=0.7.0 <0.9.0;
 
 contract CampaignFactory{
-    address[] public crowdfundingContracts;
+    address[] public crowdfundingContracts; // address array to store all campaign contracts addresses
     
+    // function: create a new campaign and store the address in array
     function createNewCrowdFunding(
         // campaign info
-        address payable _owner,
-        string memory _title,
-        string memory _description,
-        uint256 _goal,
-        uint256 _durationInDays,
-        string memory _profileImage,
+        address payable owner,
+        string memory title,
+        string memory description,
+        uint256 goal,
+        uint256 durationInDays,
+        string memory profileImage,
         // token info
-        string memory _tokenName,
-        string memory _tokenSymbol,
-        uint256 _tokenPrice,
-        uint256 _numOfTokens
+        string memory tokenName,
+        string memory tokenSymbol,
+        uint256 tokenPrice,
+        uint256 tokenSupply
     ) public returns (address) {
         CrowdFundingCampaign newCrowdFunding = new CrowdFundingCampaign(
-            _owner,
-            _title,
-            _description,
-            _goal,
-            _durationInDays,
-            _profileImage,
-            _tokenName,
-            _tokenSymbol,
-            _tokenPrice,
-            _numOfTokens
+            owner,
+            title,
+            description,
+            goal,
+            durationInDays,
+            profileImage,
+            tokenName,
+            tokenSymbol,
+            tokenPrice,
+            tokenSupply
         );
-
+        // append new campaign address to array
         crowdfundingContracts.push(address(newCrowdFunding));
-
+        // return new address
         return address(newCrowdFunding);
     }
 
-    function getAllCAmpaignsAddress() public view returns (address[] memory campaignsAddresses) {
-        address[] memory _campaignsAddresses = new address[](crowdfundingContracts.length);
-
-        for (uint i=0; i < crowdfundingContracts.length; i++) {
-            _campaignsAddresses[i] = crowdfundingContracts[i];
-        }
-
-        return _campaignsAddresses;
+    function getAllCampaignAddresses() public view returns (address[] memory campaignaddresses) {
+        return crowdfundingContracts;
     }
 
-    function getAllCampaignsInfo() public view returns (
-        address[] memory campaignAddress,
-        address[] memory ownerAddress, 
-        string[] memory title, 
-        string[] memory description, 
-        string[] memory profileImage
-    ) {
-        address[] memory addresses = new address[](crowdfundingContracts.length);
-        address[] memory owners = new address[](crowdfundingContracts.length);
-        string[] memory titles = new string[](crowdfundingContracts.length);
-        string[] memory descriptions = new string[](crowdfundingContracts.length);
-        string[] memory profileImages = new string[](crowdfundingContracts.length);
-        
-        for (uint i = 0; i < crowdfundingContracts.length; i++) {
-            CrowdFundingCampaign campaign = CrowdFundingCampaign(crowdfundingContracts[i]);
-            addresses[i] = crowdfundingContracts[i];
-            owners[i] = campaign.owner();
-            titles[i] = campaign.title();
-            descriptions[i] = campaign.description();
-            profileImages[i] = campaign.profileImage();
-        }
-        
-        return (
-            addresses,
-            owners, 
-            titles, 
-            descriptions, 
-            profileImages
-        );
-    }
-
-    struct BasicCampaignInfo {
+    // struct: basic info of a campaign
+    struct CampaignInfoBasic {
         address campaignAddress;
         address owner;
         string title;
@@ -88,11 +53,12 @@ contract CampaignFactory{
         string profileImage;
     }
 
-    function retrieveAllCampaignInfo() public view returns (BasicCampaignInfo[] memory) {
-        BasicCampaignInfo[] memory campaigns = new BasicCampaignInfo[](crowdfundingContracts.length);
+    // function: get basic of all campaigns
+    function getAllCampaignsInfo() public view returns (CampaignInfoBasic[] memory) {
+        CampaignInfoBasic[] memory campaigns = new CampaignInfoBasic[](crowdfundingContracts.length);
         for (uint256 i = 0; i < crowdfundingContracts.length; i++) {
             CrowdFundingCampaign campaign = CrowdFundingCampaign(crowdfundingContracts[i]);
-            campaigns[i] = BasicCampaignInfo({
+            campaigns[i] = CampaignInfoBasic({
                 campaignAddress: crowdfundingContracts[i],
                 owner: campaign.owner(),
                 title: campaign.title(),
@@ -103,40 +69,41 @@ contract CampaignFactory{
         return campaigns;
     }
 
-
-    struct FullCampaignInfo {
+    // struct: complete campaign info
+    struct CampaignInfoComplete {
         address campaignAddress;
         address owner;
         string title;
         string description;
         uint256 goal;
-        uint256 tokenPrice;
-        uint256 totalNumOfTokens;
-        uint256 remainNumOfTokens;
         uint256 creationDate;
         uint256 deadline;
         string profileImage;
         uint256 status;
+        uint256 tokenPrice;
+        uint256 tokenSupply;
+        uint256 tokenRemain;
     }
 
-    function getCampaignInfoByAddress(address campaignAddress) public view returns (FullCampaignInfo memory) {
+    // function: get complete campaign info by address
+    function getCampaignInfoByAddress(address campaignAddress) public view returns (CampaignInfoComplete memory) {
         CrowdFundingCampaign campaign = CrowdFundingCampaign(campaignAddress);
 
-        FullCampaignInfo memory campaignInfo = FullCampaignInfo({
+        CampaignInfoComplete memory campaignInfoComplete = CampaignInfoComplete({
             campaignAddress: campaignAddress,
             owner: campaign.owner(),
             title: campaign.title(),
             description: campaign.description(),
             goal: campaign.goal(),
-            tokenPrice: campaign.tokenPrice(),
-            totalNumOfTokens: campaign.totalNumOfTokens(),
-            remainNumOfTokens: campaign.remainNumOfTokens(),
             creationDate: campaign.creationDate(),
             deadline: campaign.deadline(),
             profileImage: campaign.profileImage(),
-            status: campaign.status()
+            status: campaign.status(),
+            tokenPrice: campaign.tokenPrice(),
+            tokenSupply: campaign.tokenSupply(),
+            tokenRemain: campaign.tokenRemain()
         });
 
-        return campaignInfo;
+        return campaignInfoComplete;
     }
 }
