@@ -4,7 +4,7 @@
       <app-search-bar (searchTextChanged)="onSearchTextEntered($event)"></app-search-bar>
     </div>
   <div class="row">
-    <div class="col-md-3 mb-4" *ngFor="let cardData of cardDataList">
+    <div class="col-md-3 mb-4" *ngFor="let cardData of visibleCardDataList">
       <app-campaign [cardData]="cardData"></app-campaign>
     </div>
   </div>

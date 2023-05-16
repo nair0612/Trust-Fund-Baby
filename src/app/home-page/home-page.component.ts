@@ -6,6 +6,7 @@ import { ContractService } from '../services/contract-services';
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css'],
 })
+
 export class HomePageComponent {
   cardDataList : any;
   campaignInfo: any;
