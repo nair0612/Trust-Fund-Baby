@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CampaignconnectionService } from '../services/campaignconnection.service';
 import { ContractService } from '../services/contract-services'
 import { ReactiveFormsModule } from '@angular/forms';
+import { CampaignService } from '../services/campaign-service';
 
 @Component({
   selector: 'app-campaign-details',
@@ -21,10 +22,13 @@ export class CampaignDetailsComponent {
   constructor(
     private route: ActivatedRoute,
     private contractService: ContractService,
-    private campaignConnectionService: CampaignconnectionService
+    private campaignService: CampaignService,
+    private campaignConnectionService: CampaignconnectionService,
+    private _fb: FormBuilder, 
   ) {
-    this.myForm = new FormGroup({
-      actionPrice: new FormControl('invest', Validators.required),
+    this.myForm = this._fb.group({
+      actionPrice: 'invest',
+      tokens: ''
     });
   }
 
@@ -54,6 +58,11 @@ export class CampaignDetailsComponent {
       });
   }
 
+  myFormNew = new FormGroup({
+    actionPrice: new FormControl("", [Validators.required]),
+    tokens: new FormControl("", [Validators.required]),
+  });
+
   items = [
     'BBCDx33532353fdg4545343',
     'CBCDx33532353fdg4545343',
@@ -78,15 +87,56 @@ export class CampaignDetailsComponent {
     'VBCDx33532353fdg4545343',
   ];
 
-  onSubmit() {
-    console.log(this.myForm.value);
+  hasDecimals(value: number): boolean {
+    return !Number.isInteger(value);
   }
 
-  getCampaignDetails(param: string) {
-    this.campaignConnectionService
-      .getCampaignDetails(this.campaignId)
-      .subscribe((result) => {
-        this.data = result;
-      });
+  onSubmit() {
+    console.log(this.myForm.value);
+    const _numOfTokensDonate = this.myForm.value.tokens
+    const _campaignAddress = this.campaignInfo.campaignAddress
+    const _ownerAddress = this.campaignInfo.owner
+    if(this.myForm.value.actionPrice== '' || this.myForm.value.tokens=='')
+    {
+      alert('Please fill all empty fields')
+    }
+    else if (this.hasDecimals(this.myForm.value.tokens))
+    {
+      alert('Tokens value cannot be in decimals.')
+    }
+    else if (this.myForm.value.actionPrice == 'invest') {
+      try {
+        this.campaignService
+          .donateToCampaign(_numOfTokensDonate, this.campaignId, _ownerAddress)
+          .then((receipt: any) => {
+            console.log(receipt);
+          });      
+      } catch (error) {
+        console.log(error);
+        alert('Some error occured. Please contact Trust Fund Baby')
+      }
+    }
+    else if (this.myForm.value.actionPrice == 'withdraw') {
+      try {
+        const _numOfTokensDonate = this.myForm.value.tokens
+        const _campaignAddress = this.campaignInfo.campaignAddress
+        this.campaignService
+          .withdrawFromCampaign(_numOfTokensDonate, this.campaignId, _ownerAddress)
+          .then((receipt: any) => {
+            console.log(receipt);
+          });      
+      } catch (error) {
+        console.log(error);
+        alert('Some error occured. Please contact Trust Fund Baby')
+      }
+    }
   }
+
+  // getCampaignDetails(param: string) {
+  //   this.campaignConnectionService
+  //     .getCampaignDetails(this.campaignId)
+  //     .subscribe((result) => {
+  //       this.data = result;
+  //     });
+  // }
 }
