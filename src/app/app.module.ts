@@ -29,8 +29,8 @@ import { CampaignDetailsComponent } from './campaign-details/campaign-details.co
     HomePageComponent,
     MyCampaignComponent,
     MyInvestmentComponent,
-    HeaderComponent,
-    CampaignDetailsComponent
+    CampaignDetailsComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

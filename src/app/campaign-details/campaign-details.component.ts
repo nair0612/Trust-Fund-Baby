@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { CampaignconnectionService } from '../services/campaignconnection.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-campaign-details',
@@ -9,11 +12,23 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class CampaignDetailsComponent {
 
   myForm: FormGroup;
+  campaignId: string;
+  data: any;
 
- constructor() {
+
+ constructor(
+  private route: ActivatedRoute,
+  private campaignConnectionService: CampaignconnectionService
+  ) {
     this.myForm = new FormGroup({
       actionPrice: new FormControl('invest', Validators.required)
   });
+  }
+
+  ngOnInit(): void {
+    this.campaignId = this.route.snapshot.url[1].path;
+    console.log('campaignId:', this.campaignId);
+    this.getCampaignDetails(this.campaignId);
   }
 
   items = ['BBCDx33532353fdg4545343',
@@ -40,5 +55,11 @@ export class CampaignDetailsComponent {
   
   onSubmit() {
     console.log(this.myForm.value);
+  }
+
+  getCampaignDetails(param: string) {
+    this.campaignConnectionService.getCampaignDetails(this.campaignId).subscribe((result) => {
+      this.data = result;
+    });
   }
 }

@@ -1,4 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { CampaignconnectionService } from '../services/campaignconnection.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-all-campaign',
@@ -6,6 +10,9 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./all-campaign.component.css'],
 })
 export class AllCampaignComponent {
+
+  data: any;
+
   cardDataList = [
     {
       id: '1',
@@ -323,6 +330,17 @@ export class AllCampaignComponent {
 
   visibleCardDataList = this.cardDataList.slice(0, 12);
 
+  constructor(
+    private route: ActivatedRoute,
+    private campaignConnectionService: CampaignconnectionService
+  ) {}
+
+  ngOnInit(): void {
+    // this.campaignId = this.route.snapshot.url[1].path;
+    // console.log('campaignId:', this.campaignId);
+    this.getAllCampaign();
+  }
+
   showMore() {
     const currentLength = this.visibleCardDataList.length;
     const regex = new RegExp(this.searchText, 'i'); // 'i' flag for case-insensitive search
@@ -332,6 +350,7 @@ export class AllCampaignComponent {
     this.visibleCardDataList = this.visibleCardDataList.concat(nextItems);
   }
 
+
   onSearchTextEntered(searchValue: string) {
     this.searchText = searchValue;
     const regex = new RegExp(this.searchText, 'i'); // 'i' flag for case-insensitive search
@@ -340,4 +359,11 @@ export class AllCampaignComponent {
       .slice(0, 12); // Reset visibleCardDataList with filtered results
     console.log(this.searchText);
   }
+
+  getAllCampaign() {
+    this.campaignConnectionService.getAllCampaign().subscribe((result) => {
+      this.data = result;
+    });
+  }
+
 }
