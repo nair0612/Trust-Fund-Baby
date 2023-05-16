@@ -2,24 +2,34 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
+import "./campaign_token.sol";
+
 contract CrowdFundingCampaign{
+    // campaign info
     address payable public owner;
     string public title;
     string public description;
     uint256 public goal;
-    uint256 public tokenPrice;
-    uint256 public totalNumOfTokens;
-    uint256 public remainNumOfTokens;
     uint256 public creationDate;
     uint256 public deadline;
     string public profileImage;
     uint256 public status;
     mapping(address => uint256) public donations;
+
+    // security variables
     bool internal locked;
     mapping(address => uint256) internal requestsTimestamps;
     uint256 private constant REQUEST_INTERVAL = 5 seconds;
-    address public tokenContract;
 
+    // token variables
+    string public tokenName;
+    string public tokenSymbol;
+    uint256 public tokenPrice;
+    uint256 public totalNumOfTokens;
+    uint256 public remainNumOfTokens;
+    address public tokenAddress; // defined afterwards
+
+    // events
     event CampaignCreated(address indexed owner, string title);
     event TokensDonated(address indexed donor, uint256 tokens);
     event TokensWithdrawn(address indexed donor, uint256 tokens);
@@ -54,27 +64,34 @@ contract CrowdFundingCampaign{
     }
 
     constructor(
+        // campaign info
         address payable _owner,
         string memory _title,
         string memory _description,
         uint256 _goal,
-        uint256 _tokenPrice,
-        uint256 _totalNumOfTokens,
         uint256 _durationInDays,
-        string memory _profileImage
+        string memory _profileImage,
+        // token info
+        string memory _tokenName,
+        string memory _tokenSymbol,
+        uint256 _tokenPrice,
+        uint256 _totalNumOfTokens
     ) {
         owner = _owner;
         title = _title;
         description = _description;
         require(_goal == _tokenPrice * _totalNumOfTokens, "Campaign Creation failed: Goal does not match the token price and number of tokens");
         goal = _goal;
-        tokenPrice = _tokenPrice;
-        totalNumOfTokens = _totalNumOfTokens;
-        remainNumOfTokens = _totalNumOfTokens;
         creationDate = block.timestamp;
         deadline = creationDate + _durationInDays * 1 days;
         profileImage = _profileImage;
         status = 1;
+        // token info
+        tokenName = _tokenName;
+        tokenSymbol = _tokenSymbol;
+        tokenPrice = _tokenPrice;
+        totalNumOfTokens = _totalNumOfTokens;
+        remainNumOfTokens = _totalNumOfTokens;
 
         emit CampaignCreated(owner, title);
     }
@@ -129,6 +146,17 @@ contract CrowdFundingCampaign{
         uint256 amountToWithdraw = donations[msg.sender] * tokenPrice;
         payable(msg.sender).transfer(amountToWithdraw);
         donations[msg.sender] = 1;
+    }
+
+    function createNewToken() public returns(address) {
+        CampaignToken newCampaignToken = new CampaignToken(
+            tokenName,
+            tokenSymbol,
+            totalNumOfTokens
+        );
+        tokenAddress = address(newCampaignToken);
+
+        return address(newCampaignToken);
     }
 
 }

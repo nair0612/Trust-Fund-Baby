@@ -8,29 +8,45 @@ contract CampaignFactory{
     address[] public crowdfundingContracts;
     
     function createNewCrowdFunding(
+        // campaign info
         address payable _owner,
         string memory _title,
         string memory _description,
         uint256 _goal,
-        uint256 _tokenPrice,
-        uint256 _numOfTokens,
         uint256 _durationInDays,
-        string memory _profileImage
-    ) public returns (address)  {
+        string memory _profileImage,
+        // token info
+        string memory _tokenName,
+        string memory _tokenSymbol,
+        uint256 _tokenPrice,
+        uint256 _numOfTokens
+    ) public returns (address) {
         CrowdFundingCampaign newCrowdFunding = new CrowdFundingCampaign(
             _owner,
             _title,
             _description,
             _goal,
-            _tokenPrice,
-            _numOfTokens,
             _durationInDays,
-            _profileImage
+            _profileImage,
+            _tokenName,
+            _tokenSymbol,
+            _tokenPrice,
+            _numOfTokens
         );
 
         crowdfundingContracts.push(address(newCrowdFunding));
 
         return address(newCrowdFunding);
+    }
+
+    function getAllCAmpaignsAddress() public view returns (address[] memory campaignsAddresses) {
+        address[] memory _campaignsAddresses = new address[](crowdfundingContracts.length);
+
+        for (uint i=0; i < crowdfundingContracts.length; i++) {
+            _campaignsAddresses[i] = crowdfundingContracts[i];
+        }
+
+        return _campaignsAddresses;
     }
 
     function getAllCampaignsInfo() public view returns (
