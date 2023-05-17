@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ContractService } from '../services/contract-services';
+import { HeaderComponent } from '../header/header.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -12,7 +14,9 @@ export class HomePageComponent {
   campaignInfo: any;
   campaignAddress = '0x100660EFBE3c77A4Ac6A5A734422D6a488c3B77a'; // Replace with the actual campaign address
 
-  constructor(private contractService: ContractService) {}
+  constructor(private contractService: ContractService,
+              private HeaderComponent: HeaderComponent,
+              private router: Router) {}
 
   getCampaignInfo() {
     this.contractService
@@ -26,6 +30,14 @@ export class HomePageComponent {
       });
   }
 
+  openCampaignForm(): void {
+    this.HeaderComponent.openCampaignForm();
+  }
+  
+  navigateToAllCampaign(): void {
+    this.router.navigate(['/AllCampaign']);
+  }
+  
   ngOnInit() {
     this.contractService.retrieveAllCampaignInfo()
       .then((campaignInfo) => {

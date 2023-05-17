@@ -43,6 +43,10 @@
   background-color: aquamarine;
 }
 
+.walletNumber{
+  color: #000117;
+  font-size: 10px;
+}
 .example-spacer {
   flex: 1 1 auto;
 }
@@ -68,7 +72,7 @@
 
 .swiper-pagination {
   position: relative;
-  top: 480px;
+  top: 500px;
 }
 
 .swiper-pagination-bullet-active {

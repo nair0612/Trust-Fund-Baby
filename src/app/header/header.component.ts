@@ -39,7 +39,6 @@ export class HeaderComponent {
       this.walletConnected = true;
       this.walletId = accounts[0];
     }
-
   }
 
   ngOnInit() : void {
