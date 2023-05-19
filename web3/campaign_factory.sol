@@ -20,7 +20,6 @@ contract CampaignFactory{
     // function: create a new campaign and store the address in array
     function createNewCrowdFunding(
         // campaign info
-        address payable _owner,
         string memory _title,
         string memory _description,
         uint256 _goal,
@@ -33,7 +32,7 @@ contract CampaignFactory{
         uint256 _tokenSupply
     ) public {
         CrowdFundingCampaign newCrowdFunding = new CrowdFundingCampaign(
-            _owner,
+            payable(msg.sender),
             _title,
             _description,
             _goal,
@@ -49,7 +48,7 @@ contract CampaignFactory{
         campaignAddresses.push(address(newCrowdFunding));
         campaignInfoStatic[address(newCrowdFunding)] = CampaignInfoStatic({
             campaignAddress: address(newCrowdFunding),
-            owner: _owner,
+            owner: payable(msg.sender),
             title: _title,
             description: _description,
             goal: _goal,
@@ -61,7 +60,7 @@ contract CampaignFactory{
             tokenSupply: _tokenSupply
         });
         // return new address
-        emit CampaignCreated(_owner, _title, address(newCrowdFunding));
+        emit CampaignCreated(msg.sender, _title, address(newCrowdFunding));
     }
 
     // struct: static info of a campaign
