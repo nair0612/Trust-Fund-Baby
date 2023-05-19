@@ -10,7 +10,6 @@ contract CrowdFundingCampaign{
     string public title;
     string public description;
     uint256 public goal;
-    uint256 public creationDate;
     uint256 public deadline;
     string public profileImage;
     uint256 public status;
@@ -33,10 +32,9 @@ contract CrowdFundingCampaign{
     bool private tokenCreated;
 
     // events
-    event CampaignCreated(address indexed owner, string title);
-    event TokensDonated(address indexed donor, uint256 tokens);
-    event TokensWithdrawn(address indexed donor, uint256 tokens);
-    event CampaignTerminated();
+    event TokensDonated(address indexed donor, uint256 tokens, address _address);
+    event TokensWithdrawn(address indexed donor, uint256 tokens, address _address);
+    event CampaignTerminated(address indexed donor, address _address);
 
     // modifier: only owner can call
     modifier onlyOwner() {
@@ -96,15 +94,13 @@ contract CrowdFundingCampaign{
         string memory _title,
         string memory _description,
         uint256 _goal,
-        uint256 _durationInDays,
+        uint256 _deadline,
         string memory _profileImage,
-
         // token info
         string memory _tokenName,
         string memory _tokenSymbol,
         uint256 _tokenPrice,
         uint256 _tokenSupply,
-
         // factory info
         address payable _factoryAddress
     ) {
@@ -114,26 +110,22 @@ contract CrowdFundingCampaign{
         description = _description;
         require(_goal == _tokenPrice * _tokenSupply, "Campaign Creation failed: Goal does not match the token price and number of tokens");
         goal = _goal;
-        creationDate = block.timestamp;
-        deadline = creationDate + _durationInDays * 1 days;
+        require(_deadline > block.timestamp, "Campaign Creation Rejected: Deadline needs to be ahead of time");
+        deadline = _deadline;
         profileImage = _profileImage;
         status = 1;
         tokenRemain = _tokenSupply;
-
         // token info
         tokenName = _tokenName;
         tokenSymbol = _tokenSymbol;
         tokenPrice = _tokenPrice;
         tokenSupply = _tokenSupply;
         tokenCreated = false;
-
         // factory info
         factoryAddress = _factoryAddress;
-
-        emit CampaignCreated(owner, title);
     }
 
-    // function: donor donate to campaign (before campaign ends)
+    // function: donor donate to campaign
     function donateToCampaign(uint256 _numOfTokensDonate) public payable onlyActive notOwner{
         updateStatus();
         require(msg.value == _numOfTokensDonate * tokenPrice, "Donation failed: Invalid donation amount");
@@ -146,7 +138,7 @@ contract CrowdFundingCampaign{
             updateStatus();
         }
 
-        emit TokensDonated(msg.sender, _numOfTokensDonate);
+        emit TokensDonated(msg.sender, _numOfTokensDonate, address(this));
     }
 
     function updateStatus() internal onlyActive {
@@ -167,7 +159,7 @@ contract CrowdFundingCampaign{
         donations[msg.sender] -= _numOfTokensWithdraw;
         tokenRemain += _numOfTokensWithdraw;
 
-        emit TokensWithdrawn(msg.sender, _numOfTokensWithdraw);
+        emit TokensWithdrawn(msg.sender, _numOfTokensWithdraw, address(this));
     }
 
     // function: dev withdraw from campaign (after campaign ends)
@@ -201,7 +193,9 @@ contract CrowdFundingCampaign{
         CampaignToken newCampaignToken = new CampaignToken(
             tokenName,
             tokenSymbol,
-            tokenSupply
+            tokenSupply,
+            factoryAddress,
+            tokenPrice / 50
         );
         tokenAddress = address(newCampaignToken);
         tokenCreated = true;
@@ -221,6 +215,7 @@ contract CrowdFundingCampaign{
         }
     }
 
+    // function: redeem tokens
     function redeemTokens(uint256 _numOfTokens) public noReentrancy afterTokenCreation{
         CampaignToken(tokenAddress).approve(address(this), _numOfTokens * 1e18);
         require(CampaignToken(tokenAddress).allowance(msg.sender, address(this)) >= _numOfTokens * 1e18, "Insufficient allowance");
