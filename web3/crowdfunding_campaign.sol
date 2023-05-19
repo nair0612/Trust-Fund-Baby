@@ -94,7 +94,7 @@ contract CrowdFundingCampaign{
         string memory _title,
         string memory _description,
         uint256 _goal,
-        uint256 _deadline,
+        uint256 _durationInDays,
         string memory _profileImage,
         // token info
         string memory _tokenName,
@@ -110,8 +110,8 @@ contract CrowdFundingCampaign{
         description = _description;
         require(_goal == _tokenPrice * _tokenSupply, "Campaign Creation failed: Goal does not match the token price and number of tokens");
         goal = _goal;
-        require(_deadline > block.timestamp, "Campaign Creation Rejected: Deadline needs to be ahead of time");
-        deadline = _deadline;
+        require(_durationInDays > 0, "Campaign Creation Rejected: Duration must be positive");
+        deadline = block.timestamp + _durationInDays * 1 days;
         profileImage = _profileImage;
         status = 1;
         tokenRemain = _tokenSupply;
