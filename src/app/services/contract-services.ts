@@ -8,53 +8,43 @@ const contractABI = [
 		"inputs": [
 			{
 				"internalType": "address payable",
-				"name": "owner",
+				"name": "_owner",
 				"type": "address"
 			},
 			{
 				"internalType": "string",
-				"name": "title",
+				"name": "_title",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "description",
+				"name": "_description",
 				"type": "string"
 			},
 			{
 				"internalType": "uint256",
-				"name": "goal",
+				"name": "_goal",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "durationInDays",
+				"name": "_tokenPrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_numOfTokens",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_durationInDays",
 				"type": "uint256"
 			},
 			{
 				"internalType": "string",
-				"name": "profileImage",
+				"name": "_profileImage",
 				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "tokenName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "tokenSymbol",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenPrice",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenSupply",
-				"type": "uint256"
 			}
 		],
 		"name": "createNewCrowdFunding",
@@ -67,29 +57,6 @@ const contractABI = [
 		],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "FeeReceived",
-		"type": "event"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
 	},
 	{
 		"inputs": [
@@ -112,52 +79,32 @@ const contractABI = [
 	},
 	{
 		"inputs": [],
-		"name": "getAllCampaignAddresses",
-		"outputs": [
-			{
-				"internalType": "address[]",
-				"name": "campaignaddresses",
-				"type": "address[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "getAllCampaignsInfo",
 		"outputs": [
 			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "campaignAddress",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "string",
-						"name": "title",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "description",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "profileImage",
-						"type": "string"
-					}
-				],
-				"internalType": "struct CampaignFactory.CampaignInfoBasic[]",
-				"name": "",
-				"type": "tuple[]"
+				"internalType": "address[]",
+				"name": "campaignAddress",
+				"type": "address[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "ownerAddress",
+				"type": "address[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "title",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "description",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "profileImage",
+				"type": "string[]"
 			}
 		],
 		"stateMutability": "view",
@@ -202,6 +149,21 @@ const contractABI = [
 					},
 					{
 						"internalType": "uint256",
+						"name": "tokenPrice",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalNumOfTokens",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "remainNumOfTokens",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "creationDate",
 						"type": "uint256"
 					},
@@ -219,26 +181,51 @@ const contractABI = [
 						"internalType": "uint256",
 						"name": "status",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tokenPrice",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tokenSupply",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tokenRemain",
-						"type": "uint256"
 					}
 				],
-				"internalType": "struct CampaignFactory.CampaignInfoComplete",
+				"internalType": "struct CampaignFactory.FullCampaignInfo",
 				"name": "",
 				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "retrieveAllCampaignInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "campaignAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "title",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "profileImage",
+						"type": "string"
+					}
+				],
+				"internalType": "struct CampaignFactory.BasicCampaignInfo[]",
+				"name": "",
+				"type": "tuple[]"
 			}
 		],
 		"stateMutability": "view",
@@ -251,7 +238,7 @@ const contractABI = [
   })
   export class ContractService {
     private contract: Contract;
-    private contractAddress = '0xa4302296c44879Ca8c1aD899640C82069d7cDf8C'; // Replace with the deployed contract address
+    private contractAddress = '0x2158f61D18aF050444ab33FbaaD2af8D9a5A6eA7'; // Replace with the deployed contract address
   
     constructor() {
       if (typeof (window as any).ethereum !== 'undefined') {
