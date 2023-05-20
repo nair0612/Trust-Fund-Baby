@@ -24,49 +24,59 @@ export class CampaignFormComponent implements OnInit {
   accountNo: string[];
   web3: Web3;
   contract: Contract;
-  contractAddress : string = '0x5033D7A468D204495813041a28c7f254cF02fab0';
+  contractAddress : string = '0xa4302296c44879Ca8c1aD899640C82069d7cDf8C';
   contractABI : any = [
     {
       "inputs": [
         {
           "internalType": "address payable",
-          "name": "_owner",
+          "name": "owner",
           "type": "address"
         },
         {
           "internalType": "string",
-          "name": "_title",
+          "name": "title",
           "type": "string"
         },
         {
           "internalType": "string",
-          "name": "_description",
+          "name": "description",
           "type": "string"
         },
         {
           "internalType": "uint256",
-          "name": "_goal",
+          "name": "goal",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "_tokenPrice",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_numOfTokens",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_durationInDays",
+          "name": "durationInDays",
           "type": "uint256"
         },
         {
           "internalType": "string",
-          "name": "_profileImage",
+          "name": "profileImage",
           "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "tokenName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "tokenSymbol",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenSupply",
+          "type": "uint256"
         }
       ],
       "name": "createNewCrowdFunding",
@@ -79,6 +89,29 @@ export class CampaignFormComponent implements OnInit {
       ],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeeReceived",
+      "type": "event"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
     },
     {
       "inputs": [
@@ -101,32 +134,52 @@ export class CampaignFormComponent implements OnInit {
     },
     {
       "inputs": [],
-      "name": "getAllCampaignsInfo",
+      "name": "getAllCampaignAddresses",
       "outputs": [
         {
           "internalType": "address[]",
-          "name": "campaignAddress",
+          "name": "campaignaddresses",
           "type": "address[]"
-        },
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllCampaignsInfo",
+      "outputs": [
         {
-          "internalType": "address[]",
-          "name": "ownerAddress",
-          "type": "address[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "title",
-          "type": "string[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "description",
-          "type": "string[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "profileImage",
-          "type": "string[]"
+          "components": [
+            {
+              "internalType": "address",
+              "name": "campaignAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "title",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "description",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "profileImage",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct CampaignFactory.CampaignInfoBasic[]",
+          "name": "",
+          "type": "tuple[]"
         }
       ],
       "stateMutability": "view",
@@ -171,21 +224,6 @@ export class CampaignFormComponent implements OnInit {
             },
             {
               "internalType": "uint256",
-              "name": "tokenPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "totalNumOfTokens",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "remainNumOfTokens",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "creationDate",
               "type": "uint256"
             },
@@ -203,51 +241,26 @@ export class CampaignFormComponent implements OnInit {
               "internalType": "uint256",
               "name": "status",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tokenPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tokenSupply",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "tokenRemain",
+              "type": "uint256"
             }
           ],
-          "internalType": "struct CampaignFactory.FullCampaignInfo",
+          "internalType": "struct CampaignFactory.CampaignInfoComplete",
           "name": "",
           "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "retrieveAllCampaignInfo",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "campaignAddress",
-              "type": "address"
-            },
-            {
-              "internalType": "address",
-              "name": "owner",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "title",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "description",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "profileImage",
-              "type": "string"
-            }
-          ],
-          "internalType": "struct CampaignFactory.BasicCampaignInfo[]",
-          "name": "",
-          "type": "tuple[]"
         }
       ],
       "stateMutability": "view",
@@ -345,12 +358,12 @@ campaignSubmitted() {
     const _owner = this.accountNo;
     const _title = this.camForm.value.campaignTitle;
     const _description = this.camForm.value.description;
-    const _goal = ((this.camForm.value.tokenPrice) * (this.camForm.value.noTokens) * (10**18));
+    const _goal = ((this.camForm.value.tokenPrice) * (this.camForm.value.noTokens) * (10**12));
     const _durationInDays = 10;
     const _profileImage = this.camForm.value.profileImage;
     const _tokenName = this.camForm.value.tokenName;
     const _tokenSymbol = this.camForm.value.tokenSymbol;
-    const _tokenPrice = (this.camForm.value.tokenPrice) * (10**18);
+    const _tokenPrice = (this.camForm.value.tokenPrice) * (10**12);
     const _tokenSupply = this.camForm.value.noTokens;
     this.contract.methods
   .createNewCrowdFunding(

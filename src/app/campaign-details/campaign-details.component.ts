@@ -16,6 +16,7 @@ export class CampaignDetailsComponent {
   campaignId: string;
   data: any;
   campaignInfo: any;
+  isFormVisible: boolean;
 
   campaignAddress = '0x100660EFBE3c77A4Ac6A5A734422D6a488c3B77a';
 
@@ -52,6 +53,12 @@ export class CampaignDetailsComponent {
         this.campaignInfo = campaignInfo;
         console.log('Campaign Address:', campaignInfo.campaignAddress);
         console.log('Campaign Info:', campaignInfo);
+        if(this.route.snapshot.url[1].path == campaignInfo.owner) {
+            this.isFormVisible = false;
+        }
+        else {
+          this.isFormVisible = true;
+        }
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -91,7 +98,15 @@ export class CampaignDetailsComponent {
     return !Number.isInteger(value);
   }
 
-  onSubmit() {
+  onSubmitTerminate() {
+
+  }
+
+  onSubmitWithdraw() {
+    
+  }
+
+  onSubmitForm() {
     console.log(this.myForm.value);
     const _numOfTokensDonate = this.myForm.value.tokens
     const _campaignAddress = this.campaignInfo.campaignAddress
