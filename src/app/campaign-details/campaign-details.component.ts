@@ -17,6 +17,8 @@ export class CampaignDetailsComponent {
   data: any;
   campaignInfo: any;
   isFormVisible: boolean;
+  goal: number;
+  remianing: number;
 
   campaignAddress = '0x100660EFBE3c77A4Ac6A5A734422D6a488c3B77a';
 
@@ -53,6 +55,8 @@ export class CampaignDetailsComponent {
         this.campaignInfo = campaignInfo;
         console.log('Campaign Address:', campaignInfo.campaignAddress);
         console.log('Campaign Info:', campaignInfo);
+        this.goal = campaignInfo[0].goal/(10**12);
+        this.remianing = (campaignInfo[0].tokenSupply-campaignInfo[1].tokenRemain)/(10**12);
         if(this.route.snapshot.url[1].path == campaignInfo.owner) {
             this.isFormVisible = false;
         }

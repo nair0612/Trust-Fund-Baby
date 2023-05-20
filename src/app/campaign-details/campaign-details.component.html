@@ -6,22 +6,22 @@
           <div>
             <div class="row">
                 <div class="col-md-8">
-                    <img src={{this.campaignInfo.profileImage}} style="height: 350px; width: 850px;"> 
+                    <img src={{this.campaignInfo[0].profileImage}} onerror="this.src='https://i.imgur.com/YwQA7Lx.png'" style="height: 350px; width: 850px;">
                 </div>
                 <div class="col-md-4">
                     <div class="remaining-days-block">
                         <h2 class="remaining-days-heading">Total Remaining Days</h2>
-                        <p class="remaining-days-number">{{this.campaignInfo.deadline}}</p>
+                        <p class="remaining-days-number">{{this.campaignInfo[0].deadline}}</p>
                     </div>
 
                     <div class="remaining-days-block">
                         <h2 class="remaining-days-heading">Target Goal to be achieved</h2>
-                        <p class="remaining-days-number">{{this.campaignInfo.goal}} ETH</p>
+                        <p class="remaining-days-number">{{this.goal}} ETH</p>
                     </div>
 
                     <div class="remaining-days-block">
                         <h2 class="remaining-days-heading">Goal Achieved Till Now</h2>
-                        <p class="remaining-days-number">{{this.campaignInfo.goal}} ETH</p>
+                        <p class="remaining-days-number">{{this.remianing}} ETH</p>
                     </div>
                 </div>
             </div>
@@ -29,24 +29,24 @@
             <div class="row">
                 <div class="col-md-8 cam-description">
                     <div class="hidden values" hidden>
-                        {{this.campaignInfo.remainNumOfTokens}}
-                        {{this.campaignInfo.totalNumOfTokens}}
-                        {{this.campaignInfo.tokenPrice}}
-                        {{this.campaignInfo.campaignAddress}} 
+                        {{this.campaignInfo[0].remainNumOfTokens}}
+                        {{this.campaignInfo[0].totalNumOfTokens}}
+                        {{this.campaignInfo[0].tokenPrice}}
+                        {{this.campaignInfo[0].campaignAddress}} 
                     </div>
                     <div class="creator">
                         <h4>Campaign Creator</h4>
-                        <p>Name of the creator : {{this.campaignInfo.owner}}</p>
+                        <p>Name of the creator : {{this.campaignInfo[0].owner}}</p>
                     </div>
                     <br>
                     <div class="title">
                         <h4>Campaign Title</h4>
-                        <p>{{this.campaignInfo.title}}</p>
+                        <p>{{this.campaignInfo[0].title}}</p>
                     </div>
                     <br>
                     <div class="description">
                         <h4>Campaign Description</h4>
-                        <p>{{this.campaignInfo.description}}</p>
+                        <p>{{this.campaignInfo[0].description}}</p>
                     </div>
                     <br>
                     <div class="donators">
