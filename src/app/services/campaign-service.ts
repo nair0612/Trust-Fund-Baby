@@ -354,14 +354,14 @@ constructor() {
   }
 
 
-  donateToCampaign(noOfTokens : Number, campaignAddress : string, ownerAddress : string): Promise<any> {
+  donateToCampaign(noOfTokens : Number, campaignAddress : string, ownerAddress : string, priceOfThisTransaction : number): Promise<any> {
     if (typeof (window as any).ethereum !== 'undefined') {
         const web3 = new Web3((window as any).ethereum);
         this.campaign = new web3.eth.Contract(campaignABI as any, campaignAddress);
       } else {
         console.log('Please install MetaMask or another Ethereum-compatible browser extension.');
       }
-    return this.campaign.methods.donateToCampaign(noOfTokens).send({ from: ownerAddress });
+    return this.campaign.methods.donateToCampaign(noOfTokens).send({ from: ownerAddress, value: priceOfThisTransaction });
   }
 
   withdrawFromCampaign(noOfTokens : Number, campaignAddress : string, ownerAddress : string): Promise<any> {

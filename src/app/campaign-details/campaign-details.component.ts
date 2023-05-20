@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CampaignconnectionService } from '../services/campaignconnection.service';
 import { ContractService } from '../services/contract-services'
 import { ReactiveFormsModule } from '@angular/forms';
 import { CampaignService } from '../services/campaign-service';
+import { WalletService } from '../services/wallet.service';
 
+@Injectable({
+  providedIn: 'root'
+})
 @Component({
   selector: 'app-campaign-details',
   templateUrl: './campaign-details.component.html',
@@ -19,6 +23,9 @@ export class CampaignDetailsComponent {
   isFormVisible: boolean;
   goal: number;
   remianing: number;
+  public ethereum;
+  accountNo: string;
+  priceOfThisTransaction: number;
 
   campaignAddress = '0x100660EFBE3c77A4Ac6A5A734422D6a488c3B77a';
 
@@ -31,8 +38,10 @@ export class CampaignDetailsComponent {
   ) {
     this.myForm = this._fb.group({
       actionPrice: 'invest',
-      tokens: ''
+      tokens: '',
     });
+    const {ethereum} = <any>window
+    this.ethereum = ethereum
   }
 
   // getCampaignInfo() {
@@ -53,11 +62,11 @@ export class CampaignDetailsComponent {
       .getCampaignInfoByAddress(this.campaignId)
       .then((campaignInfo) => {
         this.campaignInfo = campaignInfo;
-        console.log('Campaign Address:', campaignInfo.campaignAddress);
+        console.log('Campaign Address:', campaignInfo[0].campaignAddress);
         console.log('Campaign Info:', campaignInfo);
-        this.goal = campaignInfo[0].goal/(10**12);
-        this.remianing = (campaignInfo[0].tokenSupply-campaignInfo[1].tokenRemain)/(10**12);
-        if(this.route.snapshot.url[1].path == campaignInfo.owner) {
+        this.goal = campaignInfo[0].goal/(10**18);
+        this.remianing = (campaignInfo[0].tokenSupply-campaignInfo[1].tokenRemain)/(10**18);
+        if(this.route.snapshot.url[1].path.toLowerCase() == campaignInfo[0].owner.toLowerCase()) {
             this.isFormVisible = false;
         }
         else {
@@ -144,11 +153,19 @@ export class CampaignDetailsComponent {
     }
   }
 
-  onSubmitForm() {
+  public onSubmitForm = async () => {
+    try{
+      if(!this.ethereum) return alert ("Please install Meta Mask for your browser");
+      const accounts = await this.ethereum.request({method: 'eth_requestAccounts'});
+      this.accountNo = accounts[0];
+    }catch (e) {
+      throw new Error ("No ethereum object found");
+    }
     console.log(this.myForm.value);
     const _numOfTokensDonate = this.myForm.value.tokens
-    const _campaignAddress = this.campaignInfo.campaignAddress
-    const _ownerAddress = this.campaignInfo.owner
+    const _campaignAddress = this.campaignInfo[0].campaignAddress
+    const _ownerAddress = this.campaignInfo[0].owner
+    const _tokenPrice = this.campaignInfo[0].tokenPrice
     if(this.myForm.value.actionPrice== '' || this.myForm.value.tokens=='')
     {
       alert('Please fill all empty fields')
@@ -159,8 +176,9 @@ export class CampaignDetailsComponent {
     }
     else if (this.myForm.value.actionPrice == 'invest') {
       try {
+        this.priceOfThisTransaction = _numOfTokensDonate * _tokenPrice
         this.campaignService
-          .donateToCampaign(_numOfTokensDonate, this.campaignId, _ownerAddress)
+          .donateToCampaign(_numOfTokensDonate, this.campaignId, this.accountNo, this.priceOfThisTransaction)
           .then((receipt: any) => {
             console.log(receipt);
           });      
@@ -172,7 +190,7 @@ export class CampaignDetailsComponent {
     else if (this.myForm.value.actionPrice == 'withdraw') {
       try {
         const _numOfTokensDonate = this.myForm.value.tokens
-        const _campaignAddress = this.campaignInfo.campaignAddress
+        const _campaignAddress = this.campaignInfo[0].campaignAddress
         this.campaignService
           .withdrawFromCampaign(_numOfTokensDonate, this.campaignId, _ownerAddress)
           .then((receipt: any) => {

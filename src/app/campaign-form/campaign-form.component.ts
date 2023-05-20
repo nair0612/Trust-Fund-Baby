@@ -23,6 +23,8 @@ export class CampaignFormComponent implements OnInit {
   public ethereum;
   accountNo: string[];
   web3: Web3;
+  goal: string;
+  tokenPrice: string;
   contract: Contract;
   contractAddress : string = '0xD973c32F3127eBa301d09f10D36EEb881DB2B8C8';
   contractABI : any = [
@@ -408,23 +410,25 @@ campaignSubmitted() {
     const _owner = this.accountNo;
     const _title = this.camForm.value.campaignTitle;
     const _description = this.camForm.value.description;
-    const _goal = ((this.camForm.value.tokenPrice) * (this.camForm.value.noTokens) * (10**12));
+    const _goal = ((this.camForm.value.tokenPrice) * (this.camForm.value.noTokens) * (10**18));
+    this.goal= _goal.toString();
     const _durationInDays = Math.ceil(timeDiff / (1000 * 3600 * 24));;
     const _profileImage = this.camForm.value.profileImage;
     const _tokenName = this.camForm.value.tokenName;
     const _tokenSymbol = this.camForm.value.tokenSymbol;
-    const _tokenPrice = (this.camForm.value.tokenPrice) * (10**12);
+    const _tokenPrice = (this.camForm.value.tokenPrice) * (10**18);
+    this.tokenPrice = _tokenPrice.toString();
     const _tokenSupply = this.camForm.value.noTokens;
     this.contract.methods
   .createNewCrowdFunding(
     _title,
     _description,
-    _goal,
+    this.goal,
     _durationInDays,
     _profileImage,
     _tokenName,
     _tokenSymbol,
-    _tokenPrice,
+    this.tokenPrice,
     _tokenSupply,
   )
   .send({ from: this.accountNo })
