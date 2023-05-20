@@ -99,11 +99,45 @@ export class CampaignDetailsComponent {
   }
 
   onSubmitTerminate() {
-
+    try {
+      const _ownerAddress = this.campaignInfo.owner
+      this.campaignService
+        .terminateCampaign(this.campaignId, _ownerAddress)
+        .then((receipt: any) => {
+          console.log(receipt);
+        });      
+    } catch (error) {
+      console.log(error);
+      alert('Some error occured. Please contact Trust Fund Baby')
+    }
   }
 
   onSubmitWithdraw() {
-    
+    try {
+      const _ownerAddress = this.campaignInfo.owner
+      this.campaignService
+        .withdrawDevCampaign(this.campaignId, _ownerAddress)
+        .then((receipt: any) => {
+          console.log(receipt);
+        });      
+    } catch (error) {
+      console.log(error);
+      alert('Some error occured. Please contact Trust Fund Baby')
+    }
+  }
+
+  onSubmitWithdrawTerminated() {
+    try {
+      const _ownerAddress = this.campaignInfo.owner
+      this.campaignService
+        .withdrawFromTerminatedCampaign(this.campaignId, _ownerAddress)
+        .then((receipt: any) => {
+          console.log(receipt);
+        });      
+    } catch (error) {
+      console.log(error);
+      alert('Some error occured. Please contact Trust Fund Baby')
+    }
   }
 
   onSubmitForm() {
