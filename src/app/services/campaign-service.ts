@@ -374,4 +374,34 @@ constructor() {
     return this.campaign.methods.withdrawFromCampaign(noOfTokens).send({ from: ownerAddress });
   }
 
+  terminateCampaign(campaignAddress : string, ownerAddress : string): Promise<any> {
+    if (typeof (window as any).ethereum !== 'undefined') {
+        const web3 = new Web3((window as any).ethereum);
+        this.campaign = new web3.eth.Contract(campaignABI as any, campaignAddress);
+      } else {
+        console.log('Please install MetaMask or another Ethereum-compatible browser extension.');
+      }
+    return this.campaign.methods.terminateCampaign().send({ from: ownerAddress });
+  }
+
+  withdrawDevCampaign(campaignAddress : string, ownerAddress : string): Promise<any> {
+    if (typeof (window as any).ethereum !== 'undefined') {
+        const web3 = new Web3((window as any).ethereum);
+        this.campaign = new web3.eth.Contract(campaignABI as any, campaignAddress);
+      } else {
+        console.log('Please install MetaMask or another Ethereum-compatible browser extension.');
+      }
+    return this.campaign.methods.devWithdraw().send({ from: ownerAddress });
+  }
+
+  withdrawFromTerminatedCampaign(campaignAddress : string, ownerAddress : string): Promise<any> {
+    if (typeof (window as any).ethereum !== 'undefined') {
+        const web3 = new Web3((window as any).ethereum);
+        this.campaign = new web3.eth.Contract(campaignABI as any, campaignAddress);
+      } else {
+        console.log('Please install MetaMask or another Ethereum-compatible browser extension.');
+      }
+    return this.campaign.methods.withdrawFromTerminatedCampaign().send({ from: ownerAddress });
+  }
+
 }
