@@ -435,6 +435,7 @@ campaignSubmitted() {
   .then((receipt: any) => {
     console.log(receipt);
     this._dialogRef.close();
+    window.location.reload();
   });
   } catch(error) {
   console.error(error);

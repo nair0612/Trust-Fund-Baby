@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="newForm" *ngIf="this.isFormVisible">
+                    <div class="newForm" *ngIf="this.isFormVisible && !this.isWithdrawVisible">
                     <form [formGroup]="myForm" (ngSubmit)="onSubmitForm()" class="border p-3 rounded-3">
                         <div class="content">
                             <div class="row g-0">
@@ -95,13 +95,13 @@
                         <br>
                         <div mat-dialog-actions class="row">
                             <div class="col btnNew">
-                                <button type="submit" class="btn btn-primary btn-submit "> Submit </button>
+                                <button type="submit" class="btn btn-primary btn-submit " [disabled] = "isFormEnabled"> Submit </button>
                             </div>
                         </div> 
                         <br>       
                     </form>
                 </div>
-                <div class="campaignCreator border p-3 rounded-3" *ngIf="!this.isFormVisible">
+                <div class="campaignCreator border p-3 rounded-3" *ngIf="!this.isFormVisible && !this.isWithdrawVisible">
                     <div class="content">
                         <div class="row g-0">
                             <div class="col text-center p-2 mb-3 bg-light">
@@ -109,13 +109,27 @@
                             </div>
                         </div>
                         <div mat-dialog-actions class="row">
-                            <div class="col btnWithdraw">
-                                <button type="submit" class="btn btn-primary btn-submit" (click)="onSubmitWithdraw()"> Withdraw </button>
+                            <div class="col btnWithdraw" style="margin-left: 146px">
+                                <button type="submit" class="btn btn-primary btn-submit" [disabled]="isWithdrawButtonDisabled"  (click)="onSubmitWithdraw()"> Withdraw </button>
                             </div>
                         </div> 
                         <div mat-dialog-actions class="row">
-                            <div class="col btnTerminate">
-                                <button type="submit" class="btn btn-primary btn-submit" (click)="onSubmitTerminate()"> Terminate </button>
+                            <div class="col btnTerminate" style="margin-left: 146px">
+                                <button type="submit" class="btn btn-primary btn-submit" [disabled]="isTerminateButtonDisabled" (click)="onSubmitTerminate()"> Terminate </button>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="campaignCreator border p-3 rounded-3" *ngIf="!this.isFormVisible && this.isWithdrawVisible">
+                    <div class="content">
+                        <div class="row g-0">
+                            <div class="col text-center p-2 mb-3 bg-light">
+                              <span class="fs-5">The campaign has been terminated by the campaign creator. If you have invested, kindly withdraw your money</span>
+                            </div>
+                        </div>
+                        <div mat-dialog-actions class="row">
+                            <div class="col btnWithdraw" style="margin-left: 146px">
+                                <button type="submit" class="btn btn-primary btn-submit" (click)="onSubmitWithdrawTerminated()"> Withdraw </button>
                             </div>
                         </div> 
                     </div>
