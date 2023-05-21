@@ -20,12 +20,17 @@ export class CampaignDetailsComponent {
   campaignId: string;
   data: any;
   campaignInfo: any;
-  isFormVisible: boolean;
+  isFormVisible: boolean = true;
+  isWithdrawVisible: boolean;
   goal: number;
   remianing: number;
   public ethereum;
   accountNo: string;
   priceOfThisTransaction: number;
+  status: Number;
+  isTerminateButtonDisabled: boolean = true;
+  isWithdrawButtonDisabled: boolean = true;
+  isFormEnabled: boolean = true;
 
   campaignAddress = '0x100660EFBE3c77A4Ac6A5A734422D6a488c3B77a';
 
@@ -34,6 +39,7 @@ export class CampaignDetailsComponent {
     private contractService: ContractService,
     private campaignService: CampaignService,
     private campaignConnectionService: CampaignconnectionService,
+    private _walletService : WalletService,
     private _fb: FormBuilder, 
   ) {
     this.myForm = this._fb.group({
@@ -44,20 +50,16 @@ export class CampaignDetailsComponent {
     this.ethereum = ethereum
   }
 
-  // getCampaignInfo() {
-  //   this.contractService
-  //     .getCampaignInfoByAddress(this.campaignAddress)
-  //     .then((campaignInfo) => {
-  //       this.campaignInfo = campaignInfo;
-  //       console.log('Campaign Info:', campaignInfo);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error);
-  //     });
-  // }
-
   ngOnInit() {
     this.campaignId = this.route.snapshot.url[1].path;
+    if (this.ethereum) {
+      if (!this.checkWalletConnected()) {
+        this.connectToWallet();
+      }
+      else {
+        this.checkWalletConnected();
+      }
+    }
     this.contractService
       .getCampaignInfoByAddress(this.campaignId)
       .then((campaignInfo) => {
@@ -66,16 +68,66 @@ export class CampaignDetailsComponent {
         console.log('Campaign Info:', campaignInfo);
         this.goal = campaignInfo[0].goal/(10**18);
         this.remianing = (campaignInfo[0].tokenSupply-campaignInfo[1].tokenRemain)/(10**18);
-        if(this.route.snapshot.url[1].path.toLowerCase() == campaignInfo[0].owner.toLowerCase()) {
+        this.status = campaignInfo[1].status;
+        if(this.accountNo == undefined || this.accountNo == "") {
+          if (this.status == 1) {
+            this.isFormEnabled = false;
+          }
+          else if (this.status == 2) {
+            this.isFormEnabled = true;
+          }
+        }
+        else if(this.accountNo.toLowerCase() == campaignInfo[0].owner.toLowerCase()) {
             this.isFormVisible = false;
+            this.isWithdrawVisible = false;
+            if(this.status == 1) {
+              this.isTerminateButtonDisabled = false;
+              this.isWithdrawButtonDisabled = true;
+            }
+            else if (this.status == 2) {
+              if (campaignInfo[1].tokenRemain == 0) {
+                this.isTerminateButtonDisabled = true;
+                this.isWithdrawButtonDisabled = false;
+              }
+              else {
+                this.isTerminateButtonDisabled = true;
+                this.isWithdrawButtonDisabled = true;
+              }
+            }
         }
         else {
-          this.isFormVisible = true;
+          if(this.status == 1) {
+            this.isFormVisible = true;
+            this.isWithdrawVisible = false;
+          }
+          else if(this.status == 2) {
+            this.isFormVisible = false;
+            this.isWithdrawVisible = true;
+            this.isTerminateButtonDisabled = true;
+            if(campaignInfo[1].tokenRemain == 0)
+              this.isWithdrawButtonDisabled = true;
+            else {
+              this.isWithdrawButtonDisabled = false;
+            }
+          }
         }
       })
       .catch((error) => {
         console.error('Error:', error);
+        alert('Some error occured. Please contact Trust Fund Baby')
       });
+  }
+
+  connectToWallet = async () => {
+    const accounts = await this._walletService.connectWallet();
+    this.accountNo = accounts[0];
+  }
+  
+  checkWalletConnected = async () => {
+   const accounts = await this._walletService.checkWalletConnected();
+   if(accounts.length >0) {
+     this.accountNo = accounts[0];
+   }
   }
 
   myFormNew = new FormGroup({
@@ -111,11 +163,40 @@ export class CampaignDetailsComponent {
     return !Number.isInteger(value);
   }
 
-  onSubmitTerminate() {
+  public onSubmitTerminate = async () => {
+    try{
+      if(!this.ethereum) return alert ("Please install Meta Mask for your browser");
+      const accounts = await this.ethereum.request({method: 'eth_requestAccounts'});
+      this.accountNo = accounts[0];
+    }catch (e) {
+      throw new Error ("No ethereum object found");
+    }
     try {
       const _ownerAddress = this.campaignInfo.owner
       this.campaignService
-        .terminateCampaign(this.campaignId, _ownerAddress)
+        .terminateCampaign(this.campaignId, this.accountNo)
+        .then((receipt: any) => {
+          console.log(receipt);
+          window.location.reload();
+        });      
+    } catch (error) {
+      console.log(error);
+      alert('Some error occured. Please contact Trust Fund Baby')
+    }
+  }
+
+  onSubmitWithdraw= async () => {
+    try{
+      if(!this.ethereum) return alert ("Please install Meta Mask for your browser");
+      const accounts = await this.ethereum.request({method: 'eth_requestAccounts'});
+      this.accountNo = accounts[0];
+    }catch (e) {
+      throw new Error ("No ethereum object found");
+    }
+    try {
+      const _ownerAddress = this.campaignInfo.owner
+      this.campaignService
+        .withdrawDevCampaign(this.campaignId, this.accountNo)
         .then((receipt: any) => {
           console.log(receipt);
         });      
@@ -125,25 +206,18 @@ export class CampaignDetailsComponent {
     }
   }
 
-  onSubmitWithdraw() {
-    try {
-      const _ownerAddress = this.campaignInfo.owner
-      this.campaignService
-        .withdrawDevCampaign(this.campaignId, _ownerAddress)
-        .then((receipt: any) => {
-          console.log(receipt);
-        });      
-    } catch (error) {
-      console.log(error);
-      alert('Some error occured. Please contact Trust Fund Baby')
+  onSubmitWithdrawTerminated = async() => {
+    try{
+      if(!this.ethereum) return alert ("Please install Meta Mask for your browser");
+      const accounts = await this.ethereum.request({method: 'eth_requestAccounts'});
+      this.accountNo = accounts[0];
+    }catch (e) {
+      throw new Error ("No ethereum object found");
     }
-  }
-
-  onSubmitWithdrawTerminated() {
     try {
       const _ownerAddress = this.campaignInfo.owner
       this.campaignService
-        .withdrawFromTerminatedCampaign(this.campaignId, _ownerAddress)
+        .withdrawFromTerminatedCampaign(this.campaignId, this.accountNo)
         .then((receipt: any) => {
           console.log(receipt);
         });      
@@ -156,6 +230,10 @@ export class CampaignDetailsComponent {
   public onSubmitForm = async () => {
     try{
       if(!this.ethereum) return alert ("Please install Meta Mask for your browser");
+      if(!this._walletService.checkWalletConnected())
+      {
+        this._walletService.connectWallet();
+      }
       const accounts = await this.ethereum.request({method: 'eth_requestAccounts'});
       this.accountNo = accounts[0];
     }catch (e) {
@@ -181,6 +259,7 @@ export class CampaignDetailsComponent {
           .donateToCampaign(_numOfTokensDonate, this.campaignId, this.accountNo, this.priceOfThisTransaction)
           .then((receipt: any) => {
             console.log(receipt);
+            window.location.reload();
           });      
       } catch (error) {
         console.log(error);
@@ -191,10 +270,12 @@ export class CampaignDetailsComponent {
       try {
         const _numOfTokensDonate = this.myForm.value.tokens
         const _campaignAddress = this.campaignInfo[0].campaignAddress
+        this.priceOfThisTransaction = _numOfTokensDonate * _tokenPrice
         this.campaignService
-          .withdrawFromCampaign(_numOfTokensDonate, this.campaignId, _ownerAddress)
+          .withdrawFromCampaign(_numOfTokensDonate, this.campaignId, this.accountNo, this.priceOfThisTransaction)
           .then((receipt: any) => {
             console.log(receipt);
+            window.location.reload();
           });      
       } catch (error) {
         console.log(error);
@@ -203,11 +284,4 @@ export class CampaignDetailsComponent {
     }
   }
 
-  // getCampaignDetails(param: string) {
-  //   this.campaignConnectionService
-  //     .getCampaignDetails(this.campaignId)
-  //     .subscribe((result) => {
-  //       this.data = result;
-  //     });
-  // }
 }
