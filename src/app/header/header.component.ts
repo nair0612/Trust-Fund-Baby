@@ -28,8 +28,9 @@ export class HeaderComponent {
     this._dialog.open(CampaignFormComponent);
   }
 
-  connectToWallet = () => {
-     this._walletService.connectWallet();
+  connectToWallet = async() => {
+    await this._walletService.connectWallet();
+    await this.checkWalletConnected();
      window.location.reload();
   }
 
