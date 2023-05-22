@@ -126,7 +126,7 @@ contract CrowdFundingCampaign{
     }
 
     // function: donor donate to campaign
-    function donateToCampaign(uint256 _numOfTokensDonate) public payable onlyActive notOwner{
+    function donateToCampaign(uint256 _numOfTokensDonate) public payable onlyActive notOwner {
         updateStatus();
         require(msg.value == _numOfTokensDonate * tokenPrice, "Donation failed: Invalid donation amount");
         require(tokenRemain >= _numOfTokensDonate, "Donation failed: Not enough tokens remain");
@@ -195,6 +195,7 @@ contract CrowdFundingCampaign{
             tokenSymbol,
             tokenSupply,
             factoryAddress,
+            address(this),
             tokenPrice / 50
         );
         tokenAddress = address(newCampaignToken);

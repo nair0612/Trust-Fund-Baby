@@ -8,6 +8,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.3/contr
 
 contract CampaignToken is ERC20Capped, ERC20Burnable {
     address public factoryAddress;
+    address public campaignAddress;
     uint256 private fee;
 
     constructor(
@@ -15,10 +16,12 @@ contract CampaignToken is ERC20Capped, ERC20Burnable {
         string memory symbol,
         uint256 supply,
         address _factoryAddress,
+        address _campaignAddress,
         uint256 _fee
         ) ERC20(name, symbol) ERC20Capped(supply * 1e18){
         _mint(msg.sender, supply * 1e18);
         factoryAddress = _factoryAddress;
+        campaignAddress = _campaignAddress;
         fee = _fee;
     }
 
@@ -29,6 +32,8 @@ contract CampaignToken is ERC20Capped, ERC20Burnable {
 
     function _transfer(address sender, address recipient, uint256 amount) internal virtual override {
         super._transfer(sender, recipient, amount);
-        payable(factoryAddress).transfer(fee);
+        if (sender != campaignAddress) {
+            payable(factoryAddress).transfer(fee);
+        }
     }
 }
