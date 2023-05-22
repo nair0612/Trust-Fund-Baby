@@ -30,7 +30,8 @@ export class CampaignDetailsComponent {
   status: Number;
   isTerminateButtonDisabled: boolean = true;
   isWithdrawButtonDisabled: boolean = true;
-  isFormEnabled: boolean = true;
+  isFormDisabled: boolean = true;
+  tokenAddress : string
 
   campaignAddress = '0x100660EFBE3c77A4Ac6A5A734422D6a488c3B77a';
 
@@ -75,12 +76,16 @@ export class CampaignDetailsComponent {
         this.goal = campaignInfo[0].goal/(10**18);
         this.remianing = (campaignInfo[0].tokenSupply-campaignInfo[1].tokenRemain)/(10**18);
         this.status = campaignInfo[1].status;
+        this.tokenAddress = campaignInfo[1].tokenAddress
         if(this.accountNo == undefined || this.accountNo == "") {
           if (this.status == 1) {
-            this.isFormEnabled = false;
+            this.isFormDisabled = false;
           }
           else if (this.status == 2) {
-            this.isFormEnabled = true;
+            this.isFormDisabled = true;
+          }
+          else if (this.status == 0) {
+            this.isFormDisabled = true;
           }
         }
         else if(this.accountNo.toLowerCase() == campaignInfo[0].owner.toLowerCase()) {
@@ -90,33 +95,32 @@ export class CampaignDetailsComponent {
               this.isTerminateButtonDisabled = false;
               this.isWithdrawButtonDisabled = true;
             }
+            else if (this.status == 0) {
+              this.isTerminateButtonDisabled = true;
+              this.isWithdrawButtonDisabled = false;
+            }
             else if (this.status == 2) {
-              if (campaignInfo[1].tokenRemain == 0) {
-                this.isTerminateButtonDisabled = true;
-                this.isWithdrawButtonDisabled = false;
-              }
-              else {
                 this.isTerminateButtonDisabled = true;
                 this.isWithdrawButtonDisabled = true;
               }
             }
-        }
         else {
           if(this.status == 1) {
             this.isFormVisible = true;
             this.isWithdrawVisible = false;
+            this.isFormDisabled = false;
+          }
+          else if (this.status == 0) {
+            this.isFormVisible = true;
+            this.isFormDisabled = true;
           }
           else if(this.status == 2) {
             this.isFormVisible = false;
             this.isWithdrawVisible = true;
             this.isTerminateButtonDisabled = true;
-            if(campaignInfo[1].tokenRemain == 0)
-              this.isWithdrawButtonDisabled = true;
-            else {
-              this.isWithdrawButtonDisabled = false;
+            this.isWithdrawButtonDisabled = false;
             }
           }
-        }
       })
       .catch((error) => {
         console.error('Error:', error);

@@ -99,7 +99,7 @@
                       <button
                         type="submit"
                         class="btn btn-primary btn-submit"
-                        [disabled]="isFormEnabled"
+                        [disabled]="isFormDisabled"
                       >
                         Submit
                       </button>
@@ -188,6 +188,10 @@
                   <h4>Campaign Creator</h4>
                   <p>{{ this.campaignInfo[0].owner }}</p>
                 </div>
+                <div class="tokenAddress">
+                    <h4>Token Address</h4>
+                    <p>{{ this.tokenAddress }}</p>
+                  </div>
                 <br />
                 <div class="title">
                   <h4>Campaign Title</h4>

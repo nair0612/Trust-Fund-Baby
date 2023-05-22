@@ -27,16 +27,6 @@ const campaignABI = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "_tokenPrice",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_totalNumOfTokens",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
 				"name": "_durationInDays",
 				"type": "uint256"
 			},
@@ -44,6 +34,31 @@ const campaignABI = [
 				"internalType": "string",
 				"name": "_profileImage",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_tokenName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_tokenSymbol",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenPrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenSupply",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "_factoryAddress",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -55,22 +70,16 @@ const campaignABI = [
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "owner",
+				"name": "donor",
 				"type": "address"
 			},
 			{
 				"indexed": false,
-				"internalType": "string",
-				"name": "title",
-				"type": "string"
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
 			}
 		],
-		"name": "CampaignCreated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [],
 		"name": "CampaignTerminated",
 		"type": "event"
 	},
@@ -88,6 +97,12 @@ const campaignABI = [
 				"internalType": "uint256",
 				"name": "tokens",
 				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
 			}
 		],
 		"name": "TokensDonated",
@@ -107,22 +122,28 @@ const campaignABI = [
 				"internalType": "uint256",
 				"name": "tokens",
 				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
 			}
 		],
 		"name": "TokensWithdrawn",
 		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "creationDate",
-		"outputs": [
+		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "fee",
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "collectFees",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -152,13 +173,7 @@ const campaignABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_amountWithdraw",
-				"type": "uint256"
-			}
-		],
+		"inputs": [],
 		"name": "devWithdraw",
 		"outputs": [],
 		"stateMutability": "payable",
@@ -191,6 +206,25 @@ const campaignABI = [
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "donorAddresses",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -236,16 +270,16 @@ const campaignABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "remainNumOfTokens",
-		"outputs": [
+		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "_numOfTokens",
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "redeemTokens",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -283,12 +317,25 @@ const campaignABI = [
 	},
 	{
 		"inputs": [],
-		"name": "tokenContract",
+		"name": "tokenAddress",
 		"outputs": [
 			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "tokenName",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -309,12 +356,38 @@ const campaignABI = [
 	},
 	{
 		"inputs": [],
-		"name": "totalNumOfTokens",
+		"name": "tokenRemain",
 		"outputs": [
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "tokenSupply",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "tokenSymbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
