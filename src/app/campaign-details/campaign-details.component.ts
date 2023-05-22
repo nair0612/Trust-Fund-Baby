@@ -50,8 +50,14 @@ export class CampaignDetailsComponent {
     this.ethereum = ethereum
   }
 
+  scrollToTop() {
+    const scrollToOptions: ScrollToOptions = { top: 0, left: 0, behavior: 'smooth' };
+    window.scrollTo(scrollToOptions);
+  }
+
   ngOnInit() {
     this.campaignId = this.route.snapshot.url[1].path;
+    this.scrollToTop();
     if (this.ethereum) {
       if (!this.checkWalletConnected()) {
         this.connectToWallet();

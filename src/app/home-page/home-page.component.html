@@ -16,7 +16,7 @@
     [navigation]="true"
     [pagination]="{ clickable: true }"
     [height]="1300"
-    [loop]="true"
+    [loop]="false"
   >
     <ng-template swiperSlide *ngFor="let cardData of cardDataList">
       <app-campaign [cardData]="cardData"> </app-campaign>
@@ -31,7 +31,7 @@
         src="https://i.imgur.com/YwQA7Lx.png"
         alt="Photo of Campaign"
         height="400px"
-        style="position: relative; left: 20%"
+        style="position: relative; left: 0%"
       />
     </div>
     <div style="clear: left">

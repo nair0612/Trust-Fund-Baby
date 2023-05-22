@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Injectable } from '@angular/core';
+import { Component, Inject, OnInit, Injectable, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
@@ -18,6 +18,7 @@ import { Contract } from 'web3-eth-contract';
   styleUrls: ['./campaign-form.component.css']
 })
 export class CampaignFormComponent implements OnInit {
+  @ViewChild('spinner') spinner: ElementRef;
   isDisabled: boolean = true
   camForm: FormGroup;
   public ethereum;
@@ -26,6 +27,8 @@ export class CampaignFormComponent implements OnInit {
   goal: string;
   tokenPrice: string;
   contract: Contract;
+  isLoading: boolean = false;
+
   contractAddress : string = '0xD973c32F3127eBa301d09f10D36EEb881DB2B8C8';
   contractABI : any = [
     {
@@ -394,13 +397,19 @@ hasDecimals(value: number): boolean {
 }
 
 campaignSubmitted() {
+  this.spinner.nativeElement.style.display = 'block';
+  this.isLoading = true;
   console.log(this.camForm.value);
   if(this.camForm.value.campaignTitle== '' || this.camForm.value.description== '' || this.camForm.value.noTokens== '' || this.camForm.value.tokenName== '' 
   || this.camForm.value.tokenPrice== '' || this.camForm.value.tokenSymbol== '' || this.camForm.value.endDate== '' || this.camForm.value.profileImage== '') {
     alert('Please fill all the empty fields')
+    this.spinner.nativeElement.style.display = 'none';
+    this.isLoading = false;
   }
   else if (this.hasDecimals(this.camForm.value.noTokens)) {
     alert('Number of Tokens cannot be in decimal values')
+    this.spinner.nativeElement.style.display = 'none';
+    this.isLoading = false;
   }
   else {
     try {
@@ -434,6 +443,7 @@ campaignSubmitted() {
   .send({ from: this.accountNo })
   .then((receipt: any) => {
     console.log(receipt);
+    this.spinner.nativeElement.style.display = 'none';
     this._dialogRef.close();
     window.location.reload();
   });
