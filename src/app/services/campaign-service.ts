@@ -444,7 +444,7 @@ constructor() {
       } else {
         console.log('Please install MetaMask or another Ethereum-compatible browser extension.');
       }
-    return this.campaign.methods.withdrawFromCampaign(noOfTokens).send({ from: ownerAddress, value: priceOfThisTransaction });
+    return this.campaign.methods.withdrawFromCampaign(noOfTokens).send({ from: ownerAddress});
   }
 
   terminateCampaign(campaignAddress : string, ownerAddress : string): Promise<any> {

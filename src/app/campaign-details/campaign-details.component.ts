@@ -32,6 +32,7 @@ export class CampaignDetailsComponent {
   isWithdrawButtonDisabled: boolean = true;
   isFormDisabled: boolean = true;
   tokenAddress : string
+  tokenPrice : number;
 
   campaignAddress = '0x100660EFBE3c77A4Ac6A5A734422D6a488c3B77a';
 
@@ -75,6 +76,7 @@ export class CampaignDetailsComponent {
         console.log('Campaign Info:', campaignInfo);
         this.goal = campaignInfo[0].goal/(10**18);
         this.remianing = (campaignInfo[0].tokenSupply-campaignInfo[1].tokenRemain)/(10**18);
+        this.tokenPrice = campaignInfo[0].tokenPrice/(10**18);
         this.status = campaignInfo[1].status;
         this.tokenAddress = campaignInfo[1].tokenAddress
         if(this.accountNo == undefined || this.accountNo == "") {

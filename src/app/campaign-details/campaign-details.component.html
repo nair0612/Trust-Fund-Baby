@@ -13,9 +13,9 @@
               </div>
 
               <div class="remaining-days-block">
-                <h2 class="remaining-days-heading">Total Token Issued</h2>
+                <h2 class="remaining-days-heading">Total Token Issued / Price</h2>
                 <p class="remaining-days-number">
-                  {{ this.campaignInfo[0].tokenSupply }}
+                  {{ this.campaignInfo[0].tokenSupply }} / {{ this.tokenPrice }}eth
                 </p>
               </div>
 
@@ -26,7 +26,7 @@
                 </p>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 picture">
               <img
                 src="{{ this.campaignInfo[0].profileImage }}"
                 onerror="this.src='https://i.imgur.com/YwQA7Lx.png'"

@@ -29,7 +29,7 @@ export class CampaignFormComponent implements OnInit {
   contract: Contract;
   isLoading: boolean = false;
 
-  contractAddress : string = '0xA129B642624aDc0fdF5b0E1F421B7D18069672ad';
+  contractAddress : string = '0x498fc595A806ACe30FF0D99Cf115983F49f39dBC';
   contractABI : any = [
     {
       "anonymous": false,

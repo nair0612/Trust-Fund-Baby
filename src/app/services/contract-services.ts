@@ -299,7 +299,7 @@ const contractABI = [
   })
   export class ContractService {
     private contract: Contract;
-    private contractAddress = '0xA129B642624aDc0fdF5b0E1F421B7D18069672ad'; // Replace with the deployed contract address
+    private contractAddress = '0x498fc595A806ACe30FF0D99Cf115983F49f39dBC'; // Replace with the deployed contract address
   
     constructor() {
       if (typeof (window as any).ethereum !== 'undefined') {
