@@ -1,0 +1,51 @@
+<section class="secSlogan">
+  <div class="slogan-content">
+    <p class="slogan1">Empower your ideas, fund your dreams with us.</p>
+    <p class="slogan2">Invest in the future you believe in.</p>
+    <div class="button-container">
+      <button class="cta-button" (click)="openCampaignForm()">Start a Campaign</button>
+      <button class="hover-button" (click)="navigateToAllCampaign()">Fund other's Dream</button>
+    </div>
+  </div>
+</section>
+<section class="secCampaign">
+  <p class="title">Recent Projects</p>
+  <swiper
+    [slidesPerView]="4"
+    [spaceBetween]="20"
+    [navigation]="true"
+    [pagination]="{ clickable: true }"
+    [height]="1300"
+    [loop]="false"
+  >
+    <ng-template swiperSlide *ngFor="let cardData of cardDataList">
+      <app-campaign [cardData]="cardData"> </app-campaign>
+    </ng-template>
+  </swiper>
+</section>
+<section class="secAboutus" id="aboutUs">
+  <p class="title">About us</p>
+  <div class="containerAboutUs">
+    <div style="padding: 1%">
+      <img
+        src="https://i.imgur.com/YwQA7Lx.png"
+        alt="Photo of Campaign"
+        height="400px"
+        style="position: relative; left: 0%"
+      />
+    </div>
+    <div style="clear: left">
+      <h1 style="position: relative; right: 10%; font-family: 'Swansea', sans-serif; font-size: 16px;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trust Fund Baby is a crowdfunding platform
+        that believes in the power of blockchain technology to revolutionize the
+        way we approach fundraising. With blockchain-based smart contracts, we
+        can automate tasks, ensure fair distribution of funds, and offer
+        unprecedented transparency and security. This creates a global and
+        inclusive crowdfunding ecosystem where anyone can participate and bring
+        their ideas to life. Whether you're an entrepreneur, creator, or
+        innovator, Trust Fund Baby and blockchain technology are here to help
+        you turn your dreams into reality.
+      </h1>
+    </div>
+  </div>
+</section>

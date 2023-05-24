@@ -1,0 +1,36 @@
+<mat-toolbar color="white" class="navBar">
+  <button mat-icon-button (click)="sidenav1.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span><a class="name" href="/Home">Trust Fund Baby</a></span>
+  <span class="spacer"></span>
+  <span class="example-spacer"></span>
+  <button
+    class="example-icon rounded-full"
+    *ngIf="!walletConnected"
+    mat-raised-button
+    (click)="connectToWallet()"
+  >
+    Log in to Metamask
+  </button>
+  <div class="rounded-full" *ngIf="walletConnected">
+    <label class = 'walletNumber'>{{walletId}}</label>
+  </div>
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav1 mode="push">
+    <mat-nav-list class="drawer">
+      <a mat-list-item (click)="openCampaignForm()">Create Campaign</a>
+      <a mat-list-item href="/AllCampaign">All Campaigns</a>
+      <a mat-list-item href="/MyCampaign">My Campaign</a>
+      <a mat-list-item href="/Home#aboutUs" (click)="sidenav1.close()">About Us</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+    <section class="secFooter" >
+      <app-footer></app-footer>
+    </section>
+  </mat-sidenav-content>
+</mat-sidenav-container>
